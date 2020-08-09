@@ -1,3 +1,4 @@
+// базовый класс, от которого вы будете наследоваться и реализовывать специализированных персонажей
 export default class Character {
   constructor(level, type = 'generic') {
     this.level = level;
@@ -6,5 +7,8 @@ export default class Character {
     this.health = 50;
     this.type = type;
     // TODO: throw error if user use "new Character()"
+    if (!new.target) {
+      return new Error('Character should not called with new');
+    }
   }
 }

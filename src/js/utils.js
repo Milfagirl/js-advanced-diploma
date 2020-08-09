@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 export function calcTileType(index, boardSize) {
-  // TODO: write logic here
-  const array = ['top-left','top-right','top','bottom-left','bottom-right','bottom','right','left','center'];
+  // TODO: write logic here Отрисовка границ поля
+  const array = ['top-left', 'top-right', 'top', 'bottom-left', 'bottom-right', 'bottom', 'right', 'left', 'center'];
   let position;
 
   if (index === 0) {
@@ -52,6 +52,5 @@ export function calcHealthLevel(health) {
   if (health < 50) {
     return 'normal';
   }
-
   return 'high';
 }

@@ -1,4 +1,9 @@
+// класс, отвечающий за взаимодействие с HTML-страницей
 import { calcHealthLevel, calcTileType } from './utils.js';
+// import GameController from './GameController.js';
+import gameplay from './app.js';
+import gamePlay from './app.js';
+import gameCtrl from './app.js';
 
 export default class GamePlay {
   constructor() {
@@ -65,7 +70,7 @@ export default class GamePlay {
 
   /**
    * Draws positions (with chars) on boardEl
-   *
+   * Отрисовка команд
    * @param positions array of PositionedCharacter objects
    */
   redrawPositions(positions) {
@@ -93,16 +98,17 @@ export default class GamePlay {
 
   /**
    * Add listener to mouse enter for cell
-   *
+   * Вход указателя мыши в ячейку поля
    * @param callback
    */
   addCellEnterListener(callback) {
     this.cellEnterListeners.push(callback);
+    console.log(this.cellEnterListeners);
   }
 
   /**
    * Add listener to mouse leave for cell
-   *
+   * Выход указателя мыши из ячейки поля
    * @param callback
    */
   addCellLeaveListener(callback) {
@@ -111,7 +117,7 @@ export default class GamePlay {
 
   /**
    * Add listener to mouse click for cell
-   *
+   * Клик мышью по ячейке поля
    * @param callback
    */
   addCellClickListener(callback) {
@@ -148,7 +154,9 @@ export default class GamePlay {
   onCellEnter(event) {
     event.preventDefault();
     const index = this.cells.indexOf(event.currentTarget);
-    this.cellEnterListeners.forEach((o) => o.call(null, index));
+    console.log(this.cellEnterListeners);
+    console.log(gamePlay);
+    this.cellEnterListeners.forEach((o) => o.call(gameCtrl, index));
   }
 
   onCellLeave(event) {
