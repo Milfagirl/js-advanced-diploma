@@ -1,8 +1,7 @@
 // класс, отвечающий за взаимодействие с HTML-страницей
 import { calcHealthLevel, calcTileType } from './utils.js';
 // import GameController from './GameController.js';
-import gameplay from './app.js';
-import gamePlay from './app.js';
+// import gameplay from './app.js';
 import gameCtrl from './app.js';
 
 export default class GamePlay {
@@ -155,19 +154,18 @@ export default class GamePlay {
     event.preventDefault();
     const index = this.cells.indexOf(event.currentTarget);
     console.log(this.cellEnterListeners);
-    console.log(gamePlay);
     this.cellEnterListeners.forEach((o) => o.call(gameCtrl, index));
   }
 
   onCellLeave(event) {
     event.preventDefault();
     const index = this.cells.indexOf(event.currentTarget);
-    this.cellLeaveListeners.forEach((o) => o.call(null, index));
+    this.cellLeaveListeners.forEach((o) => o.call(gameCtrl, index));
   }
 
   onCellClick(event) {
     const index = this.cells.indexOf(event.currentTarget);
-    this.cellClickListeners.forEach((o) => o.call(null, index));
+    this.cellClickListeners.forEach((o) => o.call(gameCtrl, index));
   }
 
   onNewGameClick(event) {

@@ -9,10 +9,11 @@ import Undead from './childrens/Undead.js';
 import Vampire from './childrens/Vampire.js';
 import generateTeam from './generators.js';
 import PositionedCharacter from './PositionedCharacter.js';
+import { gamestate } from './GameState.js';
 
-// export let allPositions = [];
+
 export default class GameController {
-  // static allPositions = [];
+  
   constructor(gamePlay, stateService) {
     this.gamePlay = gamePlay;
     this.stateService = stateService;
@@ -53,21 +54,33 @@ export default class GameController {
     this.takecharacter = positions1.concat(positions2);
     this.gamePlay.redrawPositions(this.allPositions); // отрисовка персонажей на игровом поле
     this.gamePlay.addCellEnterListener(this.onCellEnter);
-    console.log(positions1, positions2);
+    this.gamePlay.addCellClickListener(this.onCellClick);
     // TODO: add event listeners to gamePlay events
     // TODO: load saved stated from stateService
     console.log(this.allPositions);
   }
 
   onCellClick(index) {
+    const cell = document.querySelectorAll('.cell');
+    const character = cell.item(index).childNodes;
+    console.log(this.gamePlay);
+    console.log(gamestate.from);
+    this.gamePlay.deselectCell(gamestate.from);
+    if (character.length > 0) {
+      this.allPositions.forEach((item) => {
+        if (item.position === index) {
+          this.gamePlay.selectCell(index);
+          gamestate.from = index;
+          console.log(gamestate.from);
+        }
+      });
+    }
   }
   // TODO: react to click
 
   onCellEnter(index) {
     const cell = document.querySelectorAll('.cell');
     const character = cell.item(index).childNodes;
-    console.log(cell.item(index));
-
     if (character.length > 0) {
       console.log(this.allPositions);
       console.log(this.gamePlay);
@@ -83,6 +96,7 @@ export default class GameController {
   }
 
   onCellLeave(index) {
+    this.gamePlay.hideCellTooltip(index);
     // TODO: react to mouse leave
   }
 }
