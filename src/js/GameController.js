@@ -10,10 +10,11 @@ import Vampire from './childrens/Vampire.js';
 import generateTeam from './generators.js';
 import PositionedCharacter from './PositionedCharacter.js';
 import { gamestate } from './GameState.js';
-
+import GamePlay from './GamePlay.js';
+import cursors from './cursors.js';
+import field from './field.js';
 
 export default class GameController {
-  
   constructor(gamePlay, stateService) {
     this.gamePlay = gamePlay;
     this.stateService = stateService;
@@ -51,27 +52,32 @@ export default class GameController {
     team2.forEach((item) => {
       positions2.push(new PositionedCharacter(item, stay2[Math.floor(Math.random() * stay2.length)]));
     });
-    this.takecharacter = positions1.concat(positions2);
+    this.takecharacter = positions1.concat(positions2); // формируем массив PositionedCharacter (персонаж, индекс ячейки)
     this.gamePlay.redrawPositions(this.allPositions); // отрисовка персонажей на игровом поле
-    this.gamePlay.addCellEnterListener(this.onCellEnter);
-    this.gamePlay.addCellClickListener(this.onCellClick);
+    this.gamePlay.addCellEnterListener(this.onCellEnter); // событие - наведение курсора мыши
+    this.gamePlay.addCellClickListener(this.onCellClick); // событие - клик курсора мыши
     // TODO: add event listeners to gamePlay events
     // TODO: load saved stated from stateService
     console.log(this.allPositions);
+    console.log(field);
   }
 
   onCellClick(index) {
     const cell = document.querySelectorAll('.cell');
-    const character = cell.item(index).childNodes;
-    console.log(this.gamePlay);
-    console.log(gamestate.from);
+    const character = cell.item(index).childNodes; // вложения (наличие персонажа)
+    gamestate.in = false; // персонаж не выбран
     this.gamePlay.deselectCell(gamestate.from);
     if (character.length > 0) {
       this.allPositions.forEach((item) => {
         if (item.position === index) {
-          this.gamePlay.selectCell(index);
-          gamestate.from = index;
-          console.log(gamestate.from);
+          if (this.allPositions.indexOf(item) === 2 || this.allPositions.indexOf(item) === 3) {
+            GamePlay.showError('Выбирайте персонажа из своей команды!');
+          } else {
+            this.gamePlay.selectCell(index); // выделение выбранного персонажа
+            gamestate.from = index; // номер ячейки выбранного персонажа
+            gamestate.in = true; // персонаж выбран
+            console.log(gamestate);
+          }
         }
       });
     }
@@ -81,12 +87,13 @@ export default class GameController {
   onCellEnter(index) {
     const cell = document.querySelectorAll('.cell');
     const character = cell.item(index).childNodes;
+    this.gamePlay.setCursor(cursors.auto);
     if (character.length > 0) {
-      console.log(this.allPositions);
-      console.log(this.gamePlay);
-      console.log(index);
       this.allPositions.forEach((item) => {
         if (item.position === index) {
+          if (gamestate.in) {
+            this.gamePlay.setCursor(cursors.pointer);
+          }
           this.gamePlay.showCellTooltip(`${String.fromCharCode(0xD83C, 0xDF96)}${item.character.level}${String.fromCharCode(0x2694)}${item.character.attack}${String.fromCharCode(0xD83D, 0xDEE1)}${item.character.defence}${String.fromCharCode(0x2764)}${item.character.health}`, index);
         }
       });
@@ -97,6 +104,8 @@ export default class GameController {
 
   onCellLeave(index) {
     this.gamePlay.hideCellTooltip(index);
+    gamestate.in = false;
+    console.log(gamestate);
     // TODO: react to mouse leave
   }
 }

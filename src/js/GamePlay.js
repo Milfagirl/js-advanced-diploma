@@ -225,8 +225,8 @@ export default class GamePlay {
     });
   }
 
-  setCursor(cursor) {
-    this.boardEl.style.cursor = cursor;
+  setCursor(cursors) {
+    this.boardEl.style.cursor = cursors;
   }
 
   checkBinding() {
