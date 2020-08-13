@@ -125,13 +125,14 @@ class Field {
       for (let j = 0; j < this.down[i].length; j++) {
         if (this.down[i][j] === item.position) {
           let newarray = [];
-          console.log(this.down[i]);
+          
           if (j - maxLeavePosition <= 0) {
             newarray = this.down[i].slice(0, (j + maxLeavePosition + 1));
           } else if (j + maxLeavePosition > newarray.length) {
             newarray = this.down[i].slice((j - maxLeavePosition), (j + maxLeavePosition));
           } else {
             newarray = this.down[i].slice((j - maxLeavePosition), (j + maxLeavePosition + 1));
+            console.log(newarray);
           }
           newarray.forEach((element) => {
             set.add(element);
@@ -173,6 +174,7 @@ class Field {
           newarray.forEach((element) => {
             set.add(element);
           });
+          set.delete(item.position);
           
         }
       }

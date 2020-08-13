@@ -59,21 +59,38 @@ export default class GameController {
     const cell = document.querySelectorAll('.cell');
     const character = cell.item(index).childNodes;
     this.gamePlay.setCursor(cursors.auto);
+    
+    if (gamestate.getState) {
+      const aroundleave = field.radius('leave', gamestate.getCharacter);
+      aroundleave.forEach((element) => {
+      this.gamePlay.deselectCell(element);
+      if (element === index) {
+        // this.gamePlay.setCursor(cursors.pointer);
+        this.gamePlay.selectCell(index, 'green');
+      }
+    });
+    }
+    
     if (character.length > 0) {
       team.getAllPositions.forEach((item) => {
         if (item.position === index) {
-          gamestate.getCharacter = item;
-          if (gamestate.getState) {
-            this.gamePlay.setCursor(cursors.pointer);
-          }
+          this.gamePlay.setCursor(cursors.pointer);
           this.gamePlay.showCellTooltip(`${String.fromCharCode(0xD83C, 0xDF96)}${item.character.level}${String.fromCharCode(0x2694)}${item.character.attack}${String.fromCharCode(0xD83D, 0xDEE1)}${item.character.defence}${String.fromCharCode(0x2764)}${item.character.health}`, index);
           console.log(gamestate);
+          if (gamestate.getState) {
+            const aroundleave = field.radius('attack', gamestate.getCharacter);
+            aroundleave.forEach((element) => {
+              this.gamePlay.deselectCell(element);
+              if (element === index) {
+                this.gamePlay.selectCell(index, 'red');
+              }
+            });
+          }
         }
       });
     }
-    if (gamestate.getState) {
-      field.radius('leave', gamestate.getCharacter);
-    }
+    
+    
 
     // TODO: react to mouse enter
   }
@@ -81,6 +98,7 @@ export default class GameController {
   onCellLeave(index) {
     this.gamePlay.hideCellTooltip(index);
     gamestate.getState = false;
+    gamestate.getCharacter = {};
     console.log(gamestate);
     // TODO: react to mouse leave
   }
