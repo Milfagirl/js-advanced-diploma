@@ -46,6 +46,7 @@ export default class GameController {
             this.gamePlay.selectCell(index); // выделение выбранного персонажа
             gamestate.from = index; // номер ячейки выбранного персонажа
             gamestate.in = true; // персонаж выбран
+            gamestate.setcharacter = item;
             console.log(gamestate);
           }
         }
@@ -58,15 +59,21 @@ export default class GameController {
     const cell = document.querySelectorAll('.cell');
     const character = cell.item(index).childNodes;
     this.gamePlay.setCursor(cursors.auto);
+    let checkCharacter = {};
     if (character.length > 0) {
       team.takecharacter.forEach((item) => {
         if (item.position === index) {
+          checkCharacter = item;
           if (gamestate.in) {
             this.gamePlay.setCursor(cursors.pointer);
           }
           this.gamePlay.showCellTooltip(`${String.fromCharCode(0xD83C, 0xDF96)}${item.character.level}${String.fromCharCode(0x2694)}${item.character.attack}${String.fromCharCode(0xD83D, 0xDEE1)}${item.character.defence}${String.fromCharCode(0x2764)}${item.character.health}`, index);
+          console.log(checkCharacter);
         }
       });
+    }
+    if (gamestate.in) {
+      field.leave(gamestate.setcharacter);
     }
 
     // TODO: react to mouse enter

@@ -75,6 +75,98 @@ class Field {
       this.rightup.push(arrright);
     }
   }
+
+  leave(item) {
+    const set = new Set();
+    let maxLeavePosition = 0;
+    if (item.character.type === 'bowman' || item.character.type === 'vampire') {
+      maxLeavePosition = 2;
+    }
+    if (item.character.type === 'swordsman' || item.character.type === 'undead') {
+      maxLeavePosition = 1;
+    }
+    if (item.character.type === 'magician' || item.character.type === 'daemon') {
+      maxLeavePosition = 4;
+    }
+    console.log(item.position, maxLeavePosition);
+    for (let i = 0; i < this.right.length; i++) {
+      for (let j = 0; j < this.right[i].length; j++) {
+        if (this.right[i][j] === item.position) {
+          let newarray = [];
+          if (j - maxLeavePosition <= 0) {
+            newarray = this.right[i].slice(0, (j + maxLeavePosition + 1));
+          } else if (j + maxLeavePosition > newarray.length) {
+            newarray = this.right[i].slice((j - maxLeavePosition), (j + maxLeavePosition));
+          } else {
+            newarray = this.right[i].slice((j - maxLeavePosition), (j + maxLeavePosition + 1));
+          }
+          newarray.forEach((element) => {
+            set.add(element);
+          });
+          
+        }
+      }
+    }
+    for (let i = 0; i < this.down.length; i++) {
+      for (let j = 0; j < this.down[i].length; j++) {
+        if (this.down[i][j] === item.position) {
+          let newarray = [];
+          console.log(this.down[i]);
+          if (j - maxLeavePosition <= 0) {
+            newarray = this.down[i].slice(0, (j + maxLeavePosition + 1));
+          } else if (j + maxLeavePosition > newarray.length) {
+            newarray = this.down[i].slice((j - maxLeavePosition), (j + maxLeavePosition));
+          } else {
+            newarray = this.down[i].slice((j - maxLeavePosition), (j + maxLeavePosition + 1));
+          }
+          newarray.forEach((element) => {
+            set.add(element);
+          });
+          
+          
+        }
+      }
+    }
+    for (let i = 0; i < this.rightdown.length; i++) {
+      for (let j = 0; j < this.rightdown[i].length; j++) {
+        if (this.rightdown[i][j] === item.position) {
+          let newarray = [];
+          if (j - maxLeavePosition <= 0) {
+            newarray = this.rightdown[i].slice(0, (j + maxLeavePosition + 1));
+          } else if (j + maxLeavePosition > newarray.length) {
+            newarray = this.rightdown[i].slice((j - maxLeavePosition), (j + maxLeavePosition));
+          } else {
+            newarray = this.rightdown[i].slice((j - maxLeavePosition), (j + maxLeavePosition + 1));
+          }
+          newarray.forEach((element) => {
+            set.add(element);
+          });
+          
+        }
+      }
+    }
+    for (let i = 0; i < this.rightup.length; i++) {
+      for (let j = 0; j < this.rightup[i].length; j++) {
+        if (this.rightup[i][j] === item.position) {
+          let newarray = [];
+          if (j - maxLeavePosition <= 0) {
+            newarray = this.rightup[i].slice(0, (j + maxLeavePosition + 1));
+          } else if (j + maxLeavePosition > newarray.length) {
+            newarray = this.rightup[i].slice((j - maxLeavePosition), (j + maxLeavePosition));
+          } else {
+            newarray = this.rightup[i].slice((j - maxLeavePosition), (j + maxLeavePosition + 1));
+          }
+          newarray.forEach((element) => {
+            set.add(element);
+          });
+          
+        }
+      }
+    }
+    console.log(set);
+    return set;
+  }
 }
+
 const field = new Field();
 export default field;

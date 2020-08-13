@@ -3,7 +3,7 @@ export default class GameState {
   constructor() {
     this.lastindex = 0; // позиция последнего выбранного персонажа
     this.state = false; // true - персонаж выбран
-    this.person = 0; // номер персонажа из массива allPositions
+    this.character = {}; // персонажа из массив allPositions
   }
 
   get from() {
@@ -26,13 +26,13 @@ export default class GameState {
     // сеттер, срабатывает при записи obj.propName = value
   }
 
-  get personIndex() {
-    return this.person;
+  get setcharacter() {
+    return this.character;
     // геттер, срабатывает при чтении obj.propName
   }
 
-  set personIndex(value) {
-    this.person = value;
+  set setcharacter(value) {
+    this.character = value;
     // сеттер, срабатывает при записи obj.propName = value
   }
 }
