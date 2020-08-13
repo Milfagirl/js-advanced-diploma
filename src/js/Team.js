@@ -14,12 +14,12 @@ export class Team {
     this.takeTeam();
   }
 
-  get takecharacter() {
+  get getAllPositions() {
     return this.allPositions;
     // геттер, срабатывает при чтении obj.propName
   }
 
-  set takecharacter(value) {
+  set getAllPositions(value) {
     this.allPositions = value;
     // сеттер, срабатывает при записи obj.propName = value
   }
@@ -44,7 +44,7 @@ export class Team {
     team2.forEach((item) => {
     positions2.push(new PositionedCharacter(item, stay2[Math.floor(Math.random() * stay2.length)]));
     });
-    this.takecharacter = positions1.concat(positions2);
+    this.getAllPositions = positions1.concat(positions2);
   }
 }
 const team = new Team();

@@ -76,18 +76,32 @@ class Field {
     }
   }
 
-  leave(item) {
+  radius(method, item) {
     const set = new Set();
     let maxLeavePosition = 0;
-    if (item.character.type === 'bowman' || item.character.type === 'vampire') {
-      maxLeavePosition = 2;
+    if (method === 'leave') {
+      if (item.character.type === 'bowman' || item.character.type === 'vampire') {
+        maxLeavePosition = 2;
+      }
+      if (item.character.type === 'swordsman' || item.character.type === 'undead') {
+        maxLeavePosition = 4;
+      }
+      if (item.character.type === 'magician' || item.character.type === 'daemon') {
+        maxLeavePosition = 1;
+      }
     }
-    if (item.character.type === 'swordsman' || item.character.type === 'undead') {
-      maxLeavePosition = 1;
+    if (method === 'attack') {
+      if (item.character.type === 'bowman' || item.character.type === 'vampire') {
+        maxLeavePosition = 2;
+      }
+      if (item.character.type === 'swordsman' || item.character.type === 'undead') {
+        maxLeavePosition = 1;
+      }
+      if (item.character.type === 'magician' || item.character.type === 'daemon') {
+        maxLeavePosition = 4;
+      }
     }
-    if (item.character.type === 'magician' || item.character.type === 'daemon') {
-      maxLeavePosition = 4;
-    }
+    
     console.log(item.position, maxLeavePosition);
     for (let i = 0; i < this.right.length; i++) {
       for (let j = 0; j < this.right[i].length; j++) {

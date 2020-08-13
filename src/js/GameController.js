@@ -23,30 +23,30 @@ export default class GameController {
 
   init() {
     this.gamePlay.drawUi(themes.prairie);
-    this.gamePlay.redrawPositions(team.takecharacter); // отрисовка персонажей на игровом поле
+    this.gamePlay.redrawPositions(team.getAllPositions); // отрисовка персонажей на игровом поле
     this.gamePlay.addCellEnterListener(this.onCellEnter); // событие - наведение курсора мыши
     this.gamePlay.addCellClickListener(this.onCellClick); // событие - клик курсора мыши
     // TODO: add event listeners to gamePlay events
     // TODO: load saved stated from stateService
-    console.log(team.takecharacter);
+    console.log(team.getAllPositions);
     console.log(field);
   }
 
   onCellClick(index) {
     const cell = document.querySelectorAll('.cell');
     const character = cell.item(index).childNodes; // вложения (наличие персонажа)
-    gamestate.in = false; // персонаж не выбран
-    this.gamePlay.deselectCell(gamestate.from);
+    gamestate.getState = false; // персонаж не выбран
+    this.gamePlay.deselectCell(gamestate.getLastindex);
     if (character.length > 0) {
-      team.takecharacter.forEach((item) => {
+      team.getAllPositions.forEach((item) => {
         if (item.position === index) {
-          if (team.takecharacter.indexOf(item) === 2 || team.takecharacter.indexOf(item) === 3) {
+          if (team.getAllPositions.indexOf(item) === 2 || team.getAllPositions.indexOf(item) === 3) {
             GamePlay.showError('Выбирайте персонажа из своей команды!');
           } else {
             this.gamePlay.selectCell(index); // выделение выбранного персонажа
-            gamestate.from = index; // номер ячейки выбранного персонажа
-            gamestate.in = true; // персонаж выбран
-            gamestate.setcharacter = item;
+            gamestate.getLastindex = index; // номер ячейки выбранного персонажа
+            gamestate.getState = true; // персонаж выбран
+            gamestate.getCharacter = item;
             console.log(gamestate);
           }
         }
@@ -59,21 +59,20 @@ export default class GameController {
     const cell = document.querySelectorAll('.cell');
     const character = cell.item(index).childNodes;
     this.gamePlay.setCursor(cursors.auto);
-    let checkCharacter = {};
     if (character.length > 0) {
-      team.takecharacter.forEach((item) => {
+      team.getAllPositions.forEach((item) => {
         if (item.position === index) {
-          checkCharacter = item;
-          if (gamestate.in) {
+          gamestate.getCharacter = item;
+          if (gamestate.getState) {
             this.gamePlay.setCursor(cursors.pointer);
           }
           this.gamePlay.showCellTooltip(`${String.fromCharCode(0xD83C, 0xDF96)}${item.character.level}${String.fromCharCode(0x2694)}${item.character.attack}${String.fromCharCode(0xD83D, 0xDEE1)}${item.character.defence}${String.fromCharCode(0x2764)}${item.character.health}`, index);
-          console.log(checkCharacter);
+          console.log(gamestate);
         }
       });
     }
-    if (gamestate.in) {
-      field.leave(gamestate.setcharacter);
+    if (gamestate.getState) {
+      field.radius('leave', gamestate.getCharacter);
     }
 
     // TODO: react to mouse enter
@@ -81,7 +80,7 @@ export default class GameController {
 
   onCellLeave(index) {
     this.gamePlay.hideCellTooltip(index);
-    gamestate.in = false;
+    gamestate.getState = false;
     console.log(gamestate);
     // TODO: react to mouse leave
   }

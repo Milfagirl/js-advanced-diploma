@@ -6,32 +6,32 @@ export default class GameState {
     this.character = {}; // персонажа из массив allPositions
   }
 
-  get from() {
+  get getLastindex() {
     return this.lastindex;
     // геттер, срабатывает при чтении obj.propName
   }
 
-  set from(value) {
+  set getLastindex(value) {
     this.lastindex = value;
     // сеттер, срабатывает при записи obj.propName = value
   }
 
-  get in() {
+  get getState() {
     return this.state;
     // геттер, срабатывает при чтении obj.propName
   }
 
-  set in(value) {
+  set getState(value) {
     this.state = value;
     // сеттер, срабатывает при записи obj.propName = value
   }
 
-  get setcharacter() {
+  get getCharacter() {
     return this.character;
     // геттер, срабатывает при чтении obj.propName
   }
 
-  set setcharacter(value) {
+  set getCharacter(value) {
     this.character = value;
     // сеттер, срабатывает при записи obj.propName = value
   }
