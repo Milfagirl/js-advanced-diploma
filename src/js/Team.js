@@ -25,8 +25,9 @@ export class Team {
   }
 
   takeTeam() {
-    const types = [Bowman, Daemon, Magician, Swordsman, Undead, Vampire];
-    const team1 = generateTeam(types, 4, 2); // персонажи для команды 1
+    const types1 = [Bowman, Magician, Swordsman];
+    const types2 = [Daemon, Undead, Vampire];
+    const team1 = generateTeam(types1, 4, 2); // персонажи для команды 1
     const positions1 = []; // массив персонажей команды 1 с указанием позиции
     const stay1 = [];
     for (let i = 0; i < 8; i++) {
@@ -35,7 +36,7 @@ export class Team {
     team1.forEach((item) => {
     positions1.push(new PositionedCharacter(item, stay1[Math.floor(Math.random() * stay1.length)]));
     });
-    const team2 = generateTeam(types, 4, 2); // персонажи для команды 2
+    const team2 = generateTeam(types2, 4, 2); // персонажи для команды 2
     const positions2 = []; // массив персонажей команды 2 с указанием позиции
     const stay2 = [];
     for (let i = 0; i < 8; i++) {

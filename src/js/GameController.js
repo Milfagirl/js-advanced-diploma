@@ -22,21 +22,23 @@ export default class GameController {
   }
 
   init() {
-    this.gamePlay.drawUi(themes.prairie);
+    this.gamePlay.drawUi(themes.prairie); // отрисовка поля
     this.gamePlay.redrawPositions(team.getAllPositions); // отрисовка персонажей на игровом поле
     this.gamePlay.addCellEnterListener(this.onCellEnter); // событие - наведение курсора мыши
     this.gamePlay.addCellClickListener(this.onCellClick); // событие - клик курсора мыши
+    gamestate.getState = false;
     // TODO: add event listeners to gamePlay events
     // TODO: load saved stated from stateService
     console.log(team.getAllPositions);
     console.log(field);
   }
 
-  onCellClick(index) {
+  onCellClick(index) { // событик клик
     const cell = document.querySelectorAll('.cell');
     const character = cell.item(index).childNodes; // вложения (наличие персонажа)
     gamestate.getState = false; // персонаж не выбран
     this.gamePlay.deselectCell(gamestate.getLastindex);
+    this.gamePlay.deselectCell(gamestate.lastcell);
     if (character.length > 0) {
       team.getAllPositions.forEach((item) => {
         if (item.position === index) {
@@ -44,6 +46,7 @@ export default class GameController {
             GamePlay.showError('Выбирайте персонажа из своей команды!');
           } else {
             this.gamePlay.selectCell(index); // выделение выбранного персонажа
+            this.gamePlay.setCursor(cursors.pointer);
             gamestate.getLastindex = index; // номер ячейки выбранного персонажа
             gamestate.getState = true; // персонаж выбран
             gamestate.getCharacter = item;
@@ -55,43 +58,49 @@ export default class GameController {
   }
   // TODO: react to click
 
-  onCellEnter(index) {
+  onCellEnter(index) { // событие наведение курсора мыши
     const cell = document.querySelectorAll('.cell');
     const character = cell.item(index).childNodes;
+    console.log(gamestate.getLastindex)
+    console.log(gamestate.getLastcell)
     this.gamePlay.setCursor(cursors.auto);
-    
-    if (gamestate.getState) {
+    this.gamePlay.deselectCell(gamestate.getLastcell);
+    if (gamestate.getState && index !== gamestate.getLastindex) { // если персонаж выбран
       const aroundleave = field.radius('leave', gamestate.getCharacter);
+      // this.gamePlay.deselectCell(gamestate.getLastcell);
       aroundleave.forEach((element) => {
-      this.gamePlay.deselectCell(element);
-      if (element === index) {
-        // this.gamePlay.setCursor(cursors.pointer);
-        this.gamePlay.selectCell(index, 'green');
+        if (element === index) {
+          this.gamePlay.setCursor(cursors.pointer);
+          this.gamePlay.selectCell(index, 'green');
+          gamestate.getLastcell = index;
+        }
+      });
+      if (character.length > 0) {
+        const aroundattack = field.radius('attack', gamestate.getCharacter);
+        team.getAllPositions.forEach((item) => {
+          if (item.position === index && (item.position !== 1 || 2)) {
+          // курсор находится на игроке команды 2
+            aroundattack.forEach((element) => {
+              if (index === element) {
+                this.gamePlay.selectCell(index, 'red');
+                gamestate.getLastcell = index;
+              }
+            });
+          } else {
+            this.gamePlay.setCursor(cursors.notallowed);
+            // this.gamePlay.deselectCell(gamestate.lastcell);
+            this.gamePlay.onclick = () => GamePlay.showError('Персонаж для атаки не доступен');
+          }
+        });
       }
-    });
-    }
-    
-    if (character.length > 0) {
+    } else { // персонаж не выбран
       team.getAllPositions.forEach((item) => {
         if (item.position === index) {
           this.gamePlay.setCursor(cursors.pointer);
           this.gamePlay.showCellTooltip(`${String.fromCharCode(0xD83C, 0xDF96)}${item.character.level}${String.fromCharCode(0x2694)}${item.character.attack}${String.fromCharCode(0xD83D, 0xDEE1)}${item.character.defence}${String.fromCharCode(0x2764)}${item.character.health}`, index);
-          console.log(gamestate);
-          if (gamestate.getState) {
-            const aroundleave = field.radius('attack', gamestate.getCharacter);
-            aroundleave.forEach((element) => {
-              this.gamePlay.deselectCell(element);
-              if (element === index) {
-                this.gamePlay.selectCell(index, 'red');
-              }
-            });
-          }
         }
       });
     }
-    
-    
-
     // TODO: react to mouse enter
   }
 

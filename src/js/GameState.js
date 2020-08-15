@@ -3,7 +3,16 @@ export default class GameState {
   constructor() {
     this.lastindex = 0; // позиция последнего выбранного персонажа
     this.state = false; // true - персонаж выбран
-    this.character = {}; // персонажа из массив allPositions
+    this.character = {}; // персонаж из массив allPositions
+    this.lastcell = 0; // позиция последней клетки наведения курсора
+  }
+
+  get getLastcell() {
+    return this.lastcell;
+  }
+
+  set getLastcell(value) {
+    this.lastcell = value;
   }
 
   get getLastindex() {
