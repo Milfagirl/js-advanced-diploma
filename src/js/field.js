@@ -101,23 +101,29 @@ class Field {
         maxLeavePosition = 4;
       }
     }
-    
     console.log(item.position, maxLeavePosition);
+    console.log(this.right);
+    console.log(this.down);
+    console.log(this.rightup);
+    console.log(this.rightdown);
     for (let i = 0; i < this.right.length; i++) {
       for (let j = 0; j < this.right[i].length; j++) {
         if (this.right[i][j] === item.position) {
           let newarray = [];
-          if (j - maxLeavePosition <= 0) {
-            newarray = this.right[i].slice(0, (j + maxLeavePosition + 1));
-          } else if (j + maxLeavePosition > newarray.length) {
-            newarray = this.right[i].slice((j - maxLeavePosition), (j + maxLeavePosition));
-          } else {
+          if (j - maxLeavePosition <= 0 && j + maxLeavePosition < this.right[i].length) {
+            newarray = this.right[i].slice(0, j + maxLeavePosition + 1);
+          }
+          if (j - maxLeavePosition <= 0 && j + maxLeavePosition >= this.right[i].length) {
+            newarray = this.right[i].slice(0);
+          }
+          if (j - maxLeavePosition > 0 && j + maxLeavePosition >= this.right[i].length) {
+            newarray = this.right[i].slice(j - maxLeavePosition);
+          } if (j - maxLeavePosition > 0 && j + maxLeavePosition < this.right[i].length) {
             newarray = this.right[i].slice((j - maxLeavePosition), (j + maxLeavePosition + 1));
           }
           newarray.forEach((element) => {
             set.add(element);
           });
-          
         }
       }
     }
@@ -125,20 +131,20 @@ class Field {
       for (let j = 0; j < this.down[i].length; j++) {
         if (this.down[i][j] === item.position) {
           let newarray = [];
-          
-          if (j - maxLeavePosition <= 0) {
-            newarray = this.down[i].slice(0, (j + maxLeavePosition + 1));
-          } else if (j + maxLeavePosition > newarray.length) {
-            newarray = this.down[i].slice((j - maxLeavePosition), (j + maxLeavePosition));
-          } else {
+          if (j - maxLeavePosition <= 0 && j + maxLeavePosition < this.down[i].length) {
+            newarray = this.down[i].slice(0, j + maxLeavePosition + 1);
+          }
+          if (j - maxLeavePosition <= 0 && j + maxLeavePosition >= this.down[i].length) {
+            newarray = this.down[i].slice(0);
+          }
+          if (j - maxLeavePosition > 0 && j + maxLeavePosition >= this.down[i].length) {
+            newarray = this.down[i].slice(j - maxLeavePosition);
+          } if (j - maxLeavePosition > 0 && j + maxLeavePosition < this.down[i].length) {
             newarray = this.down[i].slice((j - maxLeavePosition), (j + maxLeavePosition + 1));
-            console.log(newarray);
           }
           newarray.forEach((element) => {
             set.add(element);
           });
-          
-          
         }
       }
     }
@@ -146,17 +152,20 @@ class Field {
       for (let j = 0; j < this.rightdown[i].length; j++) {
         if (this.rightdown[i][j] === item.position) {
           let newarray = [];
-          if (j - maxLeavePosition <= 0) {
-            newarray = this.rightdown[i].slice(0, (j + maxLeavePosition + 1));
-          } else if (j + maxLeavePosition > newarray.length) {
-            newarray = this.rightdown[i].slice((j - maxLeavePosition), (j + maxLeavePosition));
-          } else {
+          if (j - maxLeavePosition <= 0 && j + maxLeavePosition < this.rightdown[i].length) {
+            newarray = this.rightdown[i].slice(0, j + maxLeavePosition + 1);
+          }
+          if (j - maxLeavePosition <= 0 && j + maxLeavePosition >= this.rightdown[i].length) {
+            newarray = this.rightdown[i].slice(0);
+          }
+          if (j - maxLeavePosition > 0 && j + maxLeavePosition >= this.rightdown[i].length) {
+            newarray = this.rightdown[i].slice(j - maxLeavePosition);
+          } if (j - maxLeavePosition > 0 && j + maxLeavePosition < this.rightdown[i].length) {
             newarray = this.rightdown[i].slice((j - maxLeavePosition), (j + maxLeavePosition + 1));
           }
           newarray.forEach((element) => {
             set.add(element);
           });
-          
         }
       }
     }
@@ -164,18 +173,21 @@ class Field {
       for (let j = 0; j < this.rightup[i].length; j++) {
         if (this.rightup[i][j] === item.position) {
           let newarray = [];
-          if (j - maxLeavePosition <= 0) {
-            newarray = this.rightup[i].slice(0, (j + maxLeavePosition + 1));
-          } else if (j + maxLeavePosition > newarray.length) {
-            newarray = this.rightup[i].slice((j - maxLeavePosition), (j + maxLeavePosition));
-          } else {
+          if (j - maxLeavePosition <= 0 && j + maxLeavePosition < this.rightup[i].length) {
+            newarray = this.rightup[i].slice(0, j + maxLeavePosition + 1);
+          }
+          if (j - maxLeavePosition <= 0 && j + maxLeavePosition >= this.rightup[i].length) {
+            newarray = this.rightup[i].slice(0);
+          }
+          if (j - maxLeavePosition > 0 && j + maxLeavePosition >= this.rightup[i].length) {
+            newarray = this.rightup[i].slice(j - maxLeavePosition);
+          } if (j - maxLeavePosition > 0 && j + maxLeavePosition < this.rightup[i].length) {
             newarray = this.rightup[i].slice((j - maxLeavePosition), (j + maxLeavePosition + 1));
           }
           newarray.forEach((element) => {
             set.add(element);
           });
           set.delete(item.position);
-          
         }
       }
     }

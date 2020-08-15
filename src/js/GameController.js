@@ -34,58 +34,89 @@ export default class GameController {
   }
 
   onCellClick(index) { // событик клик
+    console.log(gamestate);
     const cell = document.querySelectorAll('.cell');
     const character = cell.item(index).childNodes; // вложения (наличие персонажа)
-    gamestate.getState = false; // персонаж не выбран
+    // gamestate.getState = false; // персонаж не выбран
     this.gamePlay.deselectCell(gamestate.getLastindex);
     this.gamePlay.deselectCell(gamestate.lastcell);
     if (character.length > 0) {
-      team.getAllPositions.forEach((item) => {
-        if (item.position === index) {
-          if (team.getAllPositions.indexOf(item) === 2 || team.getAllPositions.indexOf(item) === 3) {
-            GamePlay.showError('Выбирайте персонажа из своей команды!');
-          } else {
-            this.gamePlay.selectCell(index); // выделение выбранного персонажа
-            this.gamePlay.setCursor(cursors.pointer);
-            gamestate.getLastindex = index; // номер ячейки выбранного персонажа
-            gamestate.getState = true; // персонаж выбран
-            gamestate.getCharacter = item;
-            console.log(gamestate);
+      if (!gamestate.getState) { // если персонаж не выбран
+        team.getAllPositions.forEach((item) => {
+          if (item.position === index) {
+            if (team.getAllPositions.indexOf(item) === 2 || team.getAllPositions.indexOf(item) === 3) {
+              GamePlay.showError('Выбирайте персонажа из своей команды!');
+            } else {
+              this.gamePlay.selectCell(index); // выделение выбранного персонажа
+              this.gamePlay.setCursor(cursors.pointer);
+              gamestate.getLastindex = index; // номер ячейки выбранного персонажа
+              gamestate.getState = true; // персонаж выбран
+              gamestate.getCharacter = item;
+              console.log(gamestate);
+            }
           }
+        });
+      } else { // если персонаж уже выбран
+        team.getAllPositions.forEach((item) => {
+          if (item.position === index) {
+            if (team.getAllPositions.indexOf(item) === 2 || team.getAllPositions.indexOf(item) === 3) {
+              gamestate.getTarget = item;
+            }
+            console.log(team.getAllPositions);
+            const damage = Math.max(gamestate.getCharacter.attack - gamestate.getTarget.defence, gamestate.getCharacter.attack * 0.1)
+            this.gamePlay.showDamage(index, damage);
+            console.log(team.getAllPositions);
+          }
+        });
+      }
+    } else if (gamestate.getState) {
+      const aroundleave = field.radius('leave', gamestate.getCharacter);
+      console.log('aroundleave', aroundleave);
+      aroundleave.forEach((element) => {
+        console.log(element);
+        if (element === index) {
+          console.log(gamestate.getLastindex, index);
+          console.log(team.changePositions(gamestate.getLastindex, index));
+          this.gamePlay.redrawPositions(team.changePositions(gamestate.getLastindex, index));
+          gamestate.getLastindex = index; // номер ячейки выбранного персонажа
+          gamestate.getState = true; // персонаж выбран
+          this.gamePlay.selectCell(index);
+          console.log(gamestate);
         }
       });
     }
   }
+
   // TODO: react to click
 
   onCellEnter(index) { // событие наведение курсора мыши
     const cell = document.querySelectorAll('.cell');
     const character = cell.item(index).childNodes;
-    console.log(gamestate.getLastindex)
-    console.log(gamestate.getLastcell)
+    console.log(gamestate.getLastindex);
+    console.log(gamestate.getLastcell);
     this.gamePlay.setCursor(cursors.auto);
-    this.gamePlay.deselectCell(gamestate.getLastcell);
+    if (gamestate.getLastcell !== gamestate.getLastindex) {
+      this.gamePlay.deselectCell(gamestate.getLastcell);
+    }
+    // this.gamePlay.deselectCell(gamestate.getLastcell);
     if (gamestate.getState && index !== gamestate.getLastindex) { // если персонаж выбран
       const aroundleave = field.radius('leave', gamestate.getCharacter);
       // this.gamePlay.deselectCell(gamestate.getLastcell);
-      aroundleave.forEach((element) => {
-        if (element === index) {
-          this.gamePlay.setCursor(cursors.pointer);
-          this.gamePlay.selectCell(index, 'green');
-          gamestate.getLastcell = index;
-        }
-      });
-      if (character.length > 0) {
+      if (character.length === 0) {
+        aroundleave.forEach((element) => {
+          if (element === index) {
+            this.gamePlay.setCursor(cursors.pointer);
+            this.gamePlay.selectCell(index, 'green');
+            gamestate.getLastcell = index;
+          }
+        });
+      } if (character.length > 0) {
+        console.log('character.length', character.length);
         const aroundattack = field.radius('attack', gamestate.getCharacter);
-        team.getAllPositions.forEach((item) => {
-          if (item.position === index && (item.position !== 1 || 2)) {
-          // курсор находится на игроке команды 2
-            aroundattack.forEach((element) => {
-              if (index === element) {
-                this.gamePlay.selectCell(index, 'red');
-                gamestate.getLastcell = index;
-              }
-            });
+        aroundattack.forEach((element) => {
+          if (index === element) {
+            this.gamePlay.selectCell(index, 'red');
+            gamestate.getLastcell = index;
           } else {
             this.gamePlay.setCursor(cursors.notallowed);
             // this.gamePlay.deselectCell(gamestate.lastcell);

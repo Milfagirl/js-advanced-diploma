@@ -47,6 +47,17 @@ export class Team {
     });
     this.getAllPositions = positions1.concat(positions2);
   }
+
+  changePositions(lastValue, newValue) {
+    const array = this.getAllPositions;
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].position === lastValue) {
+        array[i].position = newValue;
+      }
+    }
+    this.getAllPositions = array;
+    return this.getAllPositions;
+  }
 }
 const team = new Team();
 export default team;
