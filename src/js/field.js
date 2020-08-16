@@ -101,11 +101,6 @@ class Field {
         maxLeavePosition = 4;
       }
     }
-    console.log(item.position, maxLeavePosition);
-    console.log(this.right);
-    console.log(this.down);
-    console.log(this.rightup);
-    console.log(this.rightdown);
     for (let i = 0; i < this.right.length; i++) {
       for (let j = 0; j < this.right[i].length; j++) {
         if (this.right[i][j] === item.position) {
@@ -191,7 +186,6 @@ class Field {
         }
       }
     }
-    console.log(set);
     return set;
   }
 }

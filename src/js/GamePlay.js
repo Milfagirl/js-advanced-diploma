@@ -102,7 +102,6 @@ export default class GamePlay {
    */
   addCellEnterListener(callback) {
     this.cellEnterListeners.push(callback);
-    console.log(this.cellEnterListeners);
   }
 
   /**
@@ -153,7 +152,6 @@ export default class GamePlay {
   onCellEnter(event) {
     event.preventDefault();
     const index = this.cells.indexOf(event.currentTarget);
-    console.log(this.cellEnterListeners);
     this.cellEnterListeners.forEach((o) => o.call(gameCtrl, index));
   }
 

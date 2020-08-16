@@ -9,7 +9,7 @@ import Undead from './childrens/Undead.js';
 import Vampire from './childrens/Vampire.js';
 import generateTeam from './generators.js';
 import PositionedCharacter from './PositionedCharacter.js';
-import { gamestate } from './GameState.js';
+import GameState, { gamestate } from './GameState.js';
 import GamePlay from './GamePlay.js';
 import cursors from './cursors.js';
 import field from './field.js';
@@ -29,15 +29,15 @@ export default class GameController {
     gamestate.getState = false;
     // TODO: add event listeners to gamePlay events
     // TODO: load saved stated from stateService
-    console.log(team.getAllPositions);
-    console.log(field);
   }
 
   onCellClick(index) { // событик клик
-    console.log(gamestate);
     const cell = document.querySelectorAll('.cell');
     const character = cell.item(index).childNodes; // вложения (наличие персонажа)
     // gamestate.getState = false; // персонаж не выбран
+    // if (index !== gamestate.getLastindex) {
+    //   this.gamePlay.deselectCell(gamestate.getLastindex);
+    // }
     this.gamePlay.deselectCell(gamestate.getLastindex);
     this.gamePlay.deselectCell(gamestate.lastcell);
     if (character.length > 0) {
@@ -61,27 +61,31 @@ export default class GameController {
           if (item.position === index) {
             if (team.getAllPositions.indexOf(item) === 2 || team.getAllPositions.indexOf(item) === 3) {
               gamestate.getTarget = item;
+              const damage = Math.max(gamestate.getCharacter.character.attack - gamestate.getTarget.character.defence, gamestate.getCharacter.character.attack * 0.1);
+              const showdamage = this.gamePlay.showDamage(index, damage);
+              showdamage.then(() => {
+                gamestate.getTarget.character.health -= damage;
+                if (gamestate.getTarget.character.health < 0) {
+                  gamestate.getTarget.character.health = 0;
+                }
+                this.gamePlay.redrawPositions(team.changeHealth(gamestate.getTarget.character.health, index));
+
+                this.onCellEnter(index);
+                console.log(team);
+              });
+              console.log(team.getAllPositions);
             }
-            console.log(team.getAllPositions);
-            const damage = Math.max(gamestate.getCharacter.attack - gamestate.getTarget.defence, gamestate.getCharacter.attack * 0.1)
-            this.gamePlay.showDamage(index, damage);
-            console.log(team.getAllPositions);
           }
         });
       }
     } else if (gamestate.getState) {
       const aroundleave = field.radius('leave', gamestate.getCharacter);
-      console.log('aroundleave', aroundleave);
       aroundleave.forEach((element) => {
-        console.log(element);
         if (element === index) {
-          console.log(gamestate.getLastindex, index);
-          console.log(team.changePositions(gamestate.getLastindex, index));
           this.gamePlay.redrawPositions(team.changePositions(gamestate.getLastindex, index));
           gamestate.getLastindex = index; // номер ячейки выбранного персонажа
           gamestate.getState = true; // персонаж выбран
           this.gamePlay.selectCell(index);
-          console.log(gamestate);
         }
       });
     }
@@ -92,8 +96,6 @@ export default class GameController {
   onCellEnter(index) { // событие наведение курсора мыши
     const cell = document.querySelectorAll('.cell');
     const character = cell.item(index).childNodes;
-    console.log(gamestate.getLastindex);
-    console.log(gamestate.getLastcell);
     this.gamePlay.setCursor(cursors.auto);
     if (gamestate.getLastcell !== gamestate.getLastindex) {
       this.gamePlay.deselectCell(gamestate.getLastcell);
@@ -111,11 +113,11 @@ export default class GameController {
           }
         });
       } if (character.length > 0) {
-        console.log('character.length', character.length);
         const aroundattack = field.radius('attack', gamestate.getCharacter);
         aroundattack.forEach((element) => {
           if (index === element) {
             this.gamePlay.selectCell(index, 'red');
+            this.gamePlay.setCursor(cursors.crosshair);
             gamestate.getLastcell = index;
           } else {
             this.gamePlay.setCursor(cursors.notallowed);
@@ -124,14 +126,15 @@ export default class GameController {
           }
         });
       }
-    } else { // персонаж не выбран
-      team.getAllPositions.forEach((item) => {
-        if (item.position === index) {
-          this.gamePlay.setCursor(cursors.pointer);
-          this.gamePlay.showCellTooltip(`${String.fromCharCode(0xD83C, 0xDF96)}${item.character.level}${String.fromCharCode(0x2694)}${item.character.attack}${String.fromCharCode(0xD83D, 0xDEE1)}${item.character.defence}${String.fromCharCode(0x2764)}${item.character.health}`, index);
-        }
-      });
     }
+    team.getAllPositions.forEach((item) => {
+      if (item.position === index) {
+        if (!gamestate.getState) {
+          this.gamePlay.setCursor(cursors.pointer);
+        }
+        this.gamePlay.showCellTooltip(`${String.fromCharCode(0xD83C, 0xDF96)}${item.character.level}${String.fromCharCode(0x2694)}${item.character.attack}${String.fromCharCode(0xD83D, 0xDEE1)}${item.character.defence}${String.fromCharCode(0x2764)}${item.character.health}`, index);
+      }
+    });
     // TODO: react to mouse enter
   }
 

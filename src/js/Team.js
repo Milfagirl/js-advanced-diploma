@@ -58,6 +58,17 @@ export class Team {
     this.getAllPositions = array;
     return this.getAllPositions;
   }
+
+  changeHealth(health, position) {
+    const array = this.getAllPositions;
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].position === position) {
+        array[i].character.health = health;
+      }
+    }
+    this.getAllPositions = array;
+    return this.getAllPositions;
+  }
 }
 const team = new Team();
 export default team;
