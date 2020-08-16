@@ -34,17 +34,13 @@ export default class GameController {
   onCellClick(index) { // событик клик
     const cell = document.querySelectorAll('.cell');
     const character = cell.item(index).childNodes; // вложения (наличие персонажа)
-    // gamestate.getState = false; // персонаж не выбран
-    // if (index !== gamestate.getLastindex) {
-    //   this.gamePlay.deselectCell(gamestate.getLastindex);
-    // }
     this.gamePlay.deselectCell(gamestate.getLastindex);
     this.gamePlay.deselectCell(gamestate.lastcell);
     if (character.length > 0) {
       if (!gamestate.getState) { // если персонаж не выбран
         team.getAllPositions.forEach((item) => {
           if (item.position === index) {
-            if (team.getAllPositions.indexOf(item) === 2 || team.getAllPositions.indexOf(item) === 3) {
+            if (item.character === 2) {
               GamePlay.showError('Выбирайте персонажа из своей команды!');
             } else {
               this.gamePlay.selectCell(index); // выделение выбранного персонажа
@@ -56,10 +52,20 @@ export default class GameController {
             }
           }
         });
+        // team.getAllPositions.indexOf(item) === 0 || team.getAllPositions.indexOf(item) === 1)
       } else { // если персонаж уже выбран
         team.getAllPositions.forEach((item) => {
           if (item.position === index) {
-            if (team.getAllPositions.indexOf(item) === 2 || team.getAllPositions.indexOf(item) === 3) {
+            if (item.character.team === 1) {
+              this.gamePlay.selectCell(index); // выделение выбранного персонажа
+              //this.gamePlay.setCursor(cursors.pointer);
+              gamestate.getLastindex = index; // номер ячейки выбранного персонажа
+              gamestate.getState = true; // персонаж выбран
+              gamestate.getCharacter = item;
+              console.log(gamestate);
+            }
+
+            if (item.character.team === 2) {
               gamestate.getTarget = item;
               const damage = Math.max(gamestate.getCharacter.character.attack - gamestate.getTarget.character.defence, gamestate.getCharacter.character.attack * 0.1);
               const showdamage = this.gamePlay.showDamage(index, damage);
@@ -112,16 +118,22 @@ export default class GameController {
             gamestate.getLastcell = index;
           }
         });
-      } if (character.length > 0) {
+      } if (character.length > 0) { // персонаж есть в клетке
         const aroundattack = field.radius('attack', gamestate.getCharacter);
+        this.gamePlay.setCursor(cursors.notallowed);
         aroundattack.forEach((element) => {
-          if (index === element) {
-            this.gamePlay.selectCell(index, 'red');
-            this.gamePlay.setCursor(cursors.crosshair);
+          if (index === element) { // радиус атаки позволяет атаковать
+            team.getAllPositions.forEach((item) => {
+              if (item.position === index) {
+                if (item.character.team === 2) {
+                  this.gamePlay.selectCell(index, 'red');
+                  this.gamePlay.setCursor(cursors.crosshair);
+                }
+              }
+            });
             gamestate.getLastcell = index;
-          } else {
-            this.gamePlay.setCursor(cursors.notallowed);
-            // this.gamePlay.deselectCell(gamestate.lastcell);
+          }
+          if (index !== element) { // персонаж вне допустимого радиуса атаки
             this.gamePlay.onclick = () => GamePlay.showError('Персонаж для атаки не доступен');
           }
         });
@@ -129,7 +141,7 @@ export default class GameController {
     }
     team.getAllPositions.forEach((item) => {
       if (item.position === index) {
-        if (!gamestate.getState) {
+        if (item.character.team === 1) {
           this.gamePlay.setCursor(cursors.pointer);
         }
         this.gamePlay.showCellTooltip(`${String.fromCharCode(0xD83C, 0xDF96)}${item.character.level}${String.fromCharCode(0x2694)}${item.character.attack}${String.fromCharCode(0xD83D, 0xDEE1)}${item.character.defence}${String.fromCharCode(0x2764)}${item.character.health}`, index);
@@ -142,7 +154,6 @@ export default class GameController {
     this.gamePlay.hideCellTooltip(index);
     gamestate.getState = false;
     gamestate.getCharacter = {};
-    console.log(gamestate);
     // TODO: react to mouse leave
   }
 }
