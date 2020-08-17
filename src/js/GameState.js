@@ -5,7 +5,9 @@ export default class GameState {
     this.state = ''; // true - персонаж выбран
     this.character = {}; // персонаж из массив allPositions
     this.lastcell = 0; // позиция последней клетки наведения курсора
-    this.target = {};
+    this.target = {}; // персонаж для атаки из массив allPositions
+    this.move = 0; // очередность игры
+    this.level = 1;
   }
 
   get getLastcell() {
@@ -18,41 +20,50 @@ export default class GameState {
 
   get getLastindex() {
     return this.lastindex;
-    // геттер, срабатывает при чтении obj.propName
   }
 
   set getLastindex(value) {
     this.lastindex = value;
-    // сеттер, срабатывает при записи obj.propName = value
   }
 
   get getState() {
     return this.state;
-    // геттер, срабатывает при чтении obj.propName
   }
 
   set getState(value) {
     this.state = value;
-    // сеттер, срабатывает при записи obj.propName = value
   }
 
   get getCharacter() {
     return this.character;
-    // геттер, срабатывает при чтении obj.propName
   }
 
   set getCharacter(value) {
     this.character = value;
-    // сеттер, срабатывает при записи obj.propName = value
   }
+
   get getTarget() {
     return this.target;
-    // геттер, срабатывает при чтении obj.propName
   }
 
   set getTarget(value) {
     this.target = value;
-    // сеттер, срабатывает при записи obj.propName = value
+  }
+
+  get getMove() {
+    return this.move;
+  }
+
+  set getMove(value) {
+    this.move = value;
+  }
+
+  get getLevel() {
+    return this.level;
+  }
+
+  set getLevel(value) {
+    this.level = value;
   }
 }
 export const gamestate = new GameState();
