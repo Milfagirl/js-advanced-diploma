@@ -25,7 +25,7 @@ class Field {
 
     for (let i = 0; i < value; i++) {
       const arrright = [];
-      for (let j = value - 1; j >= 0; j = j- 1) {
+      for (let j = value - 1; j >= 0; j -= 1) {
         arrright.push(value * i + j);
       }
       this.left.push(arrright);
@@ -40,13 +40,13 @@ class Field {
     }
     for (let i = 0; i < value; i++) {
       const arrright = [];
-      for (let j = value - 1; j >= 0; j = j- 1) {
+      for (let j = value - 1; j >= 0; j -= 1) {
         arrright.push(value * j + i);
       }
       this.up.push(arrright);
     }
     for (let i = 1; i < value; i++) { // ниже центральной диагонали
-      const arrright = []; 
+      const arrright = [];
       for (let j = 0; j <= i; j++) {
         arrright.push(this.up[j][i - j]); // из массива снизу-вверх this.up
       }

@@ -3,7 +3,7 @@
 // внутри оно хранится как одномерный
 //  (считайте это своеобразным legacy, с которым вам придётся бороться)
 
-import Character from './Character';
+import Character from './Character.js';
 
 export default class PositionedCharacter {
   constructor(character, position) {

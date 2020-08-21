@@ -1,17 +1,19 @@
+/* eslint-disable max-len */
 // класс для команды (набор персонажей), представляющих компьютер и игрока
-import Bowman from './childrens/Bowman.js';
-import Daemon from './childrens/Daemon.js';
-import Magician from './childrens/Magician.js';
-import Swordsman from './childrens/Swordsman.js';
-import Undead from './childrens/Undead.js';
-import Vampire from './childrens/Vampire.js';
+// import Bowman from './childrens/Bowman.js';
+// import Daemon from './childrens/Daemon.js';
+// import Magician from './childrens/Magician.js';
+// import Swordsman from './childrens/Swordsman.js';
+// import Undead from './childrens/Undead.js';
+// import Vampire from './childrens/Vampire.js';
 import generateTeam from './generators.js';
 import PositionedCharacter from './PositionedCharacter.js';
+import { gamestate } from './GameState.js';
 
 export class Team {
   constructor() {
     this.allPositions = [];
-    this.takeTeam();
+    this.takeTeam(1, 1, 2, 2); // maxLevel1, maxLevel2, characterCount1, characterCount2
   }
 
   get getAllPositions() {
@@ -24,12 +26,12 @@ export class Team {
     // сеттер, срабатывает при записи obj.propName = value
   }
 
-  takeTeam() {
+  takeTeam(maxLevel1, maxLevel2, characterCount1, characterCount2) {
     let random = 0;
     let lastrandom = 0;
-    const types1 = [Bowman, Magician, Swordsman];
-    const types2 = [Daemon, Undead, Vampire];
-    const team1 = generateTeam(types1, 4, 2, 1); // персонажи для команды 1
+    // const types1 = [Bowman, Magician, Swordsman];
+    // const types2 = [Daemon, Undead, Vampire];
+    const team1 = generateTeam(gamestate.getTypes1, maxLevel1, characterCount1, 1); // персонажи для команды 1 (allowedTypes, maxLevel, characterCount, team)
     const positions1 = []; // массив персонажей команды 1 с указанием позиции
     const stay1 = [];
     for (let i = 0; i < 8; i++) {
@@ -45,7 +47,7 @@ export class Team {
       }
       lastrandom = random;
     });
-    const team2 = generateTeam(types2, 4, 2, 2); // персонажи для команды 2
+    const team2 = generateTeam(gamestate.getTypes2, maxLevel2, characterCount2, 2); // персонажи для команды 2
     const positions2 = []; // массив персонажей команды 2 с указанием позиции
     const stay2 = [];
     for (let i = 0; i < 8; i++) {
@@ -61,7 +63,7 @@ export class Team {
       }
       lastrandom = random;
     });
-    this.getAllPositions = positions1.concat(positions2);
+    this.getAllPositions = positions1.concat(positions2, this.getAllPositions);
     console.log(this.getAllPositions);
   }
 
@@ -87,5 +89,6 @@ export class Team {
     return this.getAllPositions;
   }
 }
+
 const team = new Team();
 export default team;

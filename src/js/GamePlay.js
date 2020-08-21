@@ -1,3 +1,5 @@
+/* eslint-disable no-alert */
+/* eslint-disable import/no-cycle */
 // класс, отвечающий за взаимодействие с HTML-страницей
 import { calcHealthLevel, calcTileType } from './utils.js';
 // import GameController from './GameController.js';

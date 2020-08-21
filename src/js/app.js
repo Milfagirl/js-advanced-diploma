@@ -1,7 +1,9 @@
 /**
  * Entry point of app: don't change this
  */
+// eslint-disable-next-line import/no-cycle
 import GamePlay from './GamePlay.js';
+// eslint-disable-next-line import/no-cycle
 import GameController from './GameController.js';
 import GameStateService from './GameStateService.js';
 

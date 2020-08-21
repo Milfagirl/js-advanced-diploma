@@ -11,4 +11,34 @@ export default class Character {
       return new Error('Character should not called with new');
     }
   }
+
+  get getHealth() {
+    return this.health;
+    // геттер, срабатывает при чтении obj.propName
+  }
+
+  set getHealth(value) {
+    this.health = value;
+    // сеттер, срабатывает при записи obj.propName = value
+  }
+
+  get getAttack() {
+    return this.attack;
+    // геттер, срабатывает при чтении obj.propName
+  }
+
+  set getAttack(value) {
+    this.attack = value;
+    // сеттер, срабатывает при записи obj.propName = value
+  }
+
+  get getCharacterLevel() {
+    return this.level;
+    // геттер, срабатывает при чтении obj.propName
+  }
+
+  set getCharacterLevel(value) {
+    this.level = value;
+    // сеттер, срабатывает при записи obj.propName = value
+  }
 }
