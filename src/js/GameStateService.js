@@ -6,11 +6,11 @@ export default class GameStateService {
     this.storage = storage;
   }
 
-  static save(state) {
+  save(state) {
     this.storage.setItem('state', JSON.stringify(state));
   }
 
-  static load() {
+  load() {
     try {
       return JSON.parse(this.storage.getItem('state'));
     } catch (e) {

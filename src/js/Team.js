@@ -14,7 +14,7 @@ export class Team {
   constructor() {
     this.allPositions = [];
     this.takeTeam(1, 1, 2, 2); // maxLevel1, maxLevel2, characterCount1, characterCount2
-    this.team = [];
+    // this.team = [];
   }
 
   get getAllPositions() {

@@ -10,12 +10,13 @@
 
 import themes from './themes.js';
 import { gamestate } from './GameState.js';
+import GameState from './GameState.js';
 // eslint-disable-next-line import/no-cycle
 import GamePlay from './GamePlay.js';
 import cursors from './cursors.js';
 import field from './field.js';
 import { Team } from './Team.js';
-import GameStateService from './GameStateService.js';
+// import GameStateService from './GameStateService.js';
 
 let team;
 
@@ -26,13 +27,16 @@ export default class GameController {
   }
 
   init() {
+    // const saved = this.stateService.load(state)
+
     team = new Team();
-    gamestate.getTeam = team;
+    gamestate.getGameStateTeam = team;
     this.gamePlay.drawUi(themes[gamestate.getLevel - 1]); // отрисовка поля
     this.gamePlay.redrawPositions(team.getAllPositions); // отрисовка персонажей на игровом поле
     this.gamePlay.addCellEnterListener(this.onCellEnter); // событие - наведение курсора мыши
     this.gamePlay.addCellClickListener(this.onCellClick); // событие - клик курсора мыши
-    this.gamePlay.addNewGameListener(this.newGame);
+    this.gamePlay.addNewGameListener(this.onNewGameClick);
+    this.gamePlay.addSaveGameListener(this.onSaveGameClick);
     gamestate.getState = false; // персонаж не выбран
     gamestate.getMove = 1; // очередь команды 1
     // TODO: add event listeners to gamePlay events
@@ -89,7 +93,6 @@ export default class GameController {
                   const attack = gamestate.getCharacter.character.attack;
                   const defence = gamestate.getTarget.character.defence;
                   const damage = Math.max(attack - defence, attack * 0.1);
-                  
                   const showdamage = this.gamePlay.showDamage(index, damage);
                   showdamage.then(() => {
                     const promise = new Promise((resolve) => {
@@ -100,7 +103,11 @@ export default class GameController {
                         console.log(team.getAllPositions.indexOf(gamestate.getTarget));
                         team.getAllPositions.splice(team.getAllPositions.indexOf(gamestate.getTarget), 1);
                         this.gamePlay.redrawPositions(team.getAllPositions);
-                      } else this.gamePlay.redrawPositions(team.changeHealth(gamestate.getTarget.character.health, index));
+                        gamestate.getGameStateTeam = team.getAllPositions;
+                      } else {
+                        this.gamePlay.redrawPositions(team.changeHealth(gamestate.getTarget.character.health, index));
+                        gamestate.getGameStateTeam = team.getAllPositions;
+                      }
                       this.onCellEnter(index);
                       gamestate.getLastcell = index;
                       resolve();
@@ -123,6 +130,7 @@ export default class GameController {
             aroundleave.forEach((element) => {
               if (element === index) {
                 this.gamePlay.redrawPositions(team.changePositions(gamestate.getLastindex, index));
+                gamestate.getGameStateTeam = team.getAllPositions;
                 gamestate.getLastindex = index; // номер ячейки выбранного персонажа
                 gamestate.getState = true; // персонаж выбран
                 this.gamePlay.selectCell(index);
@@ -143,6 +151,7 @@ export default class GameController {
         GamePlay.showMessage('Следующий уровень');
         this.levelUp();
         this.gamePlay.redrawPositions(team.getAllPositions);
+        gamestate.getGameStateTeam = team.getAllPositions;
         this.gamePlay.addCellEnterListener(this.onCellEnter); // событие - наведение курсора мыши
         this.gamePlay.addCellClickListener(this.onCellClick); // событие - клик курсора мыши
         gamestate.getState = false; // персонаж не выбран
@@ -259,10 +268,12 @@ export default class GameController {
                     gamestate.getTarget.character.health = 0;
                     team.getAllPositions.splice(team.getAllPositions.indexOf(gamestate.getTarget), 1);
                     this.gamePlay.redrawPositions(team.getAllPositions);
+                    gamestate.getGameStateTeam = team.getAllPositions;
                     this.gamePlay.deselectCell(gamestate.getTarget.position);
                     console.log(team.getAllPositions);
                   } else {
                     team.getAllPositions = team.changeHealth(gamestate.getTarget.character.health, gamestate.getTarget.position);
+                    gamestate.getGameStateTeam = team.getAllPositions;
                   }
                 });
                 gamestate.getstate = false;
@@ -285,6 +296,7 @@ export default class GameController {
           celltoleave = arrayleave[Math.floor(Math.random() * arrayleave.length)];
         }
         this.gamePlay.redrawPositions(team.changePositions(character.position, celltoleave));
+        gamestate.getGameStateTeam = team.getAllPositions;
         gamestate.getState = false; // персонаж не выбран
         // this.gamePlay.deselectCell(gamestate.getLastindex);
         gamestate.getMove = 1;
@@ -307,7 +319,7 @@ export default class GameController {
       if (item.character.getHealth >= 20) {
         item.character.getHealth = 20;
       }
-      const attackAfter = Math.max(item.character.getAttack, item.character.getAttack * (180 - item.character.getHealth) / 100);
+      const attackAfter = Math.max(item.character.getAttack, item.character.getAttack * ((180 - item.character.getHealth) / 100));
       item.character.getAttack = attackAfter;
       if (item.character.team === 1) {
         item.character.getCharacterLevel++;
@@ -324,6 +336,7 @@ export default class GameController {
           }
         });
         team.takeTeam(1, Math.floor(1 + Math.random() * 2), 1, count + 1);
+        gamestate.getGameStateTeam = team.getAllPositions;
         break;
       case 3:
         count = 0; // количество выживших игроков команды 1
@@ -333,6 +346,7 @@ export default class GameController {
           }
         });
         team.takeTeam(Math.floor(1 + Math.random() * 2), Math.floor(1 + Math.random() * 3), 2, count + 2);
+        gamestate.getGameStateTeam = team.getAllPositions;
         break;
       case 4:
         count = 0; // количество выживших игроков команды 1
@@ -342,24 +356,23 @@ export default class GameController {
           }
         });
         team.takeTeam(Math.floor(1 + Math.random() * 3), Math.floor(1 + Math.random() * 4), 2, count + 2);
+        gamestate.getGameStateTeam = team.getAllPositions;
         break;
     }
     console.log(team.getAllPositions);
   }
 
-  newGame() {
+  onNewGameClick() {
     const lastIndex = gamestate.getLastindex;
     const lastCell = gamestate.getLastcell;
-    // const gamePlay = new GamePlay();
-    // gamePlay.bindToDOM(document.querySelector('#game-container'));
-    // const stateService = new GameStateService(localStorage);
-    // const gameCtrl = new GameController(gamePlay, stateService);
-    // // gamePlay.cellClickListeners = [];
-    // // gamePlay.cellEnterListeners = [];
-    // // gamePlay.cellLeaveListeners = [];
     this.init()
     gamestate.getLastindex = lastIndex;
     gamestate.getLastcell = lastCell;
     console.log(team);
+  }
+
+  onSaveGameClick() {
+    this.stateService.save(gamestate.getStateForSaveGame(gamestate));
+    console.log(this.stateService.load())
   }
 }
