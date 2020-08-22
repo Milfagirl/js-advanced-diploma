@@ -27,27 +27,10 @@ export default class GameController {
 
   init() {
     team = new Team();
-    const saved = this.stateService.load()
-    console.log(saved)
-    if (saved.stateonsave) {
-      team.getAllPositions = saved.stateteam;
-      gamestate.getMove = saved.statemove;
-      gamestate.getLastindex = saved.statelastindex;
-      gamestate.getLastCell = saved.statelastcell;
-      this.gamePlay.drawUi(themes[gamestate.getLevel - 1]); // отрисовка поля
-      this.gamePlay.redrawPositions(team.getAllPositions); // отрисовка персонажей на игровом поле
-    } else {
-      // team = new Team();
-      gamestate.getMove = 1;
-      this.gamePlay.drawUi(themes[gamestate.getLevel - 1]); // отрисовка поля
-      this.gamePlay.redrawPositions(team.getAllPositions); // отрисовка персонажей на игровом поле
-    }
-    console.log(team)
-    console.log(team.getAllPositions)
-    // team = new Team();
+    gamestate.getMove = 1;
     gamestate.getGameStateTeam = team.getAllPositions;
-    // this.gamePlay.drawUi(themes[gamestate.getLevel - 1]); // отрисовка поля
-    // this.gamePlay.redrawPositions(team.getAllPositions); // отрисовка персонажей на игровом поле
+    this.gamePlay.drawUi(themes[gamestate.getLevel - 1]); // отрисовка поля
+    this.gamePlay.redrawPositions(team.getAllPositions); // отрисовка персонажей на игровом поле
     this.gamePlay.addCellEnterListener(this.onCellEnter); // событие - наведение курсора мыши
     this.gamePlay.addCellClickListener(this.onCellClick); // событие - клик курсора мыши
     this.gamePlay.addNewGameListener(this.onNewGameClick);

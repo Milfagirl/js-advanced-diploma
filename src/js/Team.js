@@ -9,6 +9,7 @@
 import generateTeam from './generators.js';
 import PositionedCharacter from './PositionedCharacter.js';
 import { gamestate } from './GameState.js';
+import gameCtrl from './app.js';
 
 export class Team {
   constructor() {
@@ -38,6 +39,7 @@ export class Team {
   }
 
   takeTeam(maxLevel1, maxLevel2, characterCount1, characterCount2) {
+    
     let random = 0;
     const arrayofrandom = [];
     // const types1 = [Bowman, Magician, Swordsman];
@@ -76,6 +78,7 @@ export class Team {
     });
     this.getAllPositions = positions1.concat(positions2, this.getAllPositions);
     console.log(this.getAllPositions);
+    
   }
 
   changePositions(lastValue, newValue) {
