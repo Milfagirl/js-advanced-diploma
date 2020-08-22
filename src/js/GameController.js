@@ -372,7 +372,7 @@ export default class GameController {
   }
 
   onSaveGameClick() {
-    gamestate.getGameStateTeam = team;
+    gamestate.getGameStateTeam = team.getAllPositions;
     gamestate.getOnSave = true;
     this.stateService.save(gamestate.getStateForSaveGame(gamestate));
     // console.log(this.stateService.load())
