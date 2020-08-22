@@ -107,12 +107,14 @@ export default class GameState {
     const move = state.getMove;
     const team = state.getGameStateTeam;
     const onsave = state.getOnSave;
+    const level = state.getLevel;
     const returnstate = {
       statelastindex: lastindex,
       statelastcell: lastcell,
       statemove: move,
       stateteam: team,
       stateonsave: onsave,
+      statelevel: level,
     };
     console.log(returnstate);
     return returnstate;

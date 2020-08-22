@@ -27,6 +27,10 @@ export default class GameController {
 
   init() {
     team = new Team();
+    const saved = this.stateService.load();
+    if (saved.stateonsave) {
+      gamestate.getLevel = saved.statelevel;
+    }
     gamestate.getMove = 1;
     gamestate.getGameStateTeam = team.getAllPositions;
     this.gamePlay.drawUi(themes[gamestate.getLevel - 1]); // отрисовка поля
@@ -66,6 +70,7 @@ export default class GameController {
               if (item.position === index) {
                 if (item.character.team === 2) {
                   GamePlay.showError('Выбирайте персонажа из своей команды!');
+                  return;
                 } else {
                   this.gamePlay.selectCell(index); // выделение выбранного персонажа
                   this.gamePlay.setCursor(cursors.pointer);
@@ -364,6 +369,7 @@ export default class GameController {
     const lastIndex = gamestate.getLastindex;
     const lastCell = gamestate.getLastcell;
     gamestate.getOnSave = false;
+    gamestate.getLevel = 1;
     this.stateService.save(gamestate.getStateForSaveGame(gamestate));
     this.init()
     gamestate.getLastindex = lastIndex;
