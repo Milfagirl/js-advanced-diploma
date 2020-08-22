@@ -14,6 +14,7 @@ export class Team {
   constructor() {
     this.allPositions = [];
     this.takeTeam(1, 1, 2, 2); // maxLevel1, maxLevel2, characterCount1, characterCount2
+    this.team = [];
   }
 
   get getAllPositions() {
@@ -26,9 +27,19 @@ export class Team {
     // сеттер, срабатывает при записи obj.propName = value
   }
 
+  get getTeam() {
+    return this.team;
+    // геттер, срабатывает при чтении obj.propName
+  }
+
+  set getTeam(value) {
+    this.team = value;
+    // сеттер, срабатывает при записи obj.propName = value
+  }
+
   takeTeam(maxLevel1, maxLevel2, characterCount1, characterCount2) {
     let random = 0;
-    let lastrandom = 0;
+    const arrayofrandom = [];
     // const types1 = [Bowman, Magician, Swordsman];
     // const types2 = [Daemon, Undead, Vampire];
     const team1 = generateTeam(gamestate.getTypes1, maxLevel1, characterCount1, 1); // персонажи для команды 1 (allowedTypes, maxLevel, characterCount, team)
@@ -39,13 +50,14 @@ export class Team {
     }
     team1.forEach((item) => {
       random = stay1[Math.floor(Math.random() * stay1.length)];
-      if (random !== lastrandom) {
-        positions1.push(new PositionedCharacter(item, random));
-      } else {
+      while (arrayofrandom.indexOf(random) >= 0) {
         random = stay1[Math.floor(Math.random() * stay1.length)];
-        positions1.push(new PositionedCharacter(item, random));
       }
-      lastrandom = random;
+      arrayofrandom.push(random);
+     
+        positions1.push(new PositionedCharacter(item, random));
+     
+     
     });
     const team2 = generateTeam(gamestate.getTypes2, maxLevel2, characterCount2, 2); // персонажи для команды 2
     const positions2 = []; // массив персонажей команды 2 с указанием позиции
@@ -55,13 +67,12 @@ export class Team {
     }
     team2.forEach((item) => {
       random = stay2[Math.floor(Math.random() * stay2.length)];
-      if (random !== lastrandom) {
-        positions1.push(new PositionedCharacter(item, random));
-      } else {
+      while (arrayofrandom.indexOf(random) >= 0) {
         random = stay2[Math.floor(Math.random() * stay2.length)];
-        positions1.push(new PositionedCharacter(item, random));
       }
-      lastrandom = random;
+      arrayofrandom.push(random);
+     
+        positions2.push(new PositionedCharacter(item, random));
     });
     this.getAllPositions = positions1.concat(positions2, this.getAllPositions);
     console.log(this.getAllPositions);
@@ -90,5 +101,5 @@ export class Team {
   }
 }
 
-const team = new Team();
-export default team;
+// const team = new Team();
+// export default team;

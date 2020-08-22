@@ -170,17 +170,17 @@ export default class GamePlay {
 
   onNewGameClick(event) {
     event.preventDefault();
-    this.newGameListeners.forEach((o) => o.call(null));
+    this.newGameListeners.forEach((o) => o.call(gameCtrl));
   }
 
   onSaveGameClick(event) {
     event.preventDefault();
-    this.saveGameListeners.forEach((o) => o.call(null));
+    this.saveGameListeners.forEach((o) => o.call(gameCtrl));
   }
 
   onLoadGameClick(event) {
     event.preventDefault();
-    this.loadGameListeners.forEach((o) => o.call(null));
+    this.loadGameListeners.forEach((o) => o.call(gameCtrl));
   }
 
   static showError(message) {
