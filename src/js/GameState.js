@@ -18,6 +18,15 @@ export default class GameState {
     this.types1 = [Bowman, Magician, Swordsman];
     this.types2 = [Daemon, Undead, Vampire];
     this.gamestateteam = [];
+    this.onsave = false;
+  }
+
+  get getOnSave() {
+    return this.onsave;
+  }
+
+  set getOnSave(value) {
+    this.onsave = value;
   }
 
   get getGameStateTeam() {
@@ -97,11 +106,13 @@ export default class GameState {
     const lastcell = state.getLastcell;
     const move = state.getMove;
     const team = state.getGameStateTeam;
+    const onsave = state.getOnSave;
     const returnstate = {
       statelastindex: lastindex,
       statelastcell: lastcell,
       statemove: move,
       stateteam: team,
+      stateonsave: onsave,
     };
     console.log(returnstate);
     return returnstate;

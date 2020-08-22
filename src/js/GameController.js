@@ -10,7 +10,6 @@
 
 import themes from './themes.js';
 import { gamestate } from './GameState.js';
-import GameState from './GameState.js';
 // eslint-disable-next-line import/no-cycle
 import GamePlay from './GamePlay.js';
 import cursors from './cursors.js';
@@ -27,18 +26,34 @@ export default class GameController {
   }
 
   init() {
-    // const saved = this.stateService.load(state)
-
     team = new Team();
-    gamestate.getGameStateTeam = team;
-    this.gamePlay.drawUi(themes[gamestate.getLevel - 1]); // отрисовка поля
-    this.gamePlay.redrawPositions(team.getAllPositions); // отрисовка персонажей на игровом поле
+    const saved = this.stateService.load()
+    console.log(saved)
+    if (saved.stateonsave) {
+      team.getAllPositions = saved.stateteam;
+      gamestate.getMove = saved.statemove;
+      gamestate.getLastindex = saved.statelastindex;
+      gamestate.getLastCell = saved.statelastcell;
+      this.gamePlay.drawUi(themes[gamestate.getLevel - 1]); // отрисовка поля
+      this.gamePlay.redrawPositions(team.getAllPositions); // отрисовка персонажей на игровом поле
+    } else {
+      // team = new Team();
+      gamestate.getMove = 1;
+      this.gamePlay.drawUi(themes[gamestate.getLevel - 1]); // отрисовка поля
+      this.gamePlay.redrawPositions(team.getAllPositions); // отрисовка персонажей на игровом поле
+    }
+    console.log(team)
+    console.log(team.getAllPositions)
+    // team = new Team();
+    gamestate.getGameStateTeam = team.getAllPositions;
+    // this.gamePlay.drawUi(themes[gamestate.getLevel - 1]); // отрисовка поля
+    // this.gamePlay.redrawPositions(team.getAllPositions); // отрисовка персонажей на игровом поле
     this.gamePlay.addCellEnterListener(this.onCellEnter); // событие - наведение курсора мыши
     this.gamePlay.addCellClickListener(this.onCellClick); // событие - клик курсора мыши
     this.gamePlay.addNewGameListener(this.onNewGameClick);
     this.gamePlay.addSaveGameListener(this.onSaveGameClick);
     gamestate.getState = false; // персонаж не выбран
-    gamestate.getMove = 1; // очередь команды 1
+    // gamestate.getMove = 1; // очередь команды 1
     // TODO: add event listeners to gamePlay events
     // TODO: load saved stated from stateService
   }
@@ -365,6 +380,8 @@ export default class GameController {
   onNewGameClick() {
     const lastIndex = gamestate.getLastindex;
     const lastCell = gamestate.getLastcell;
+    gamestate.getOnSave = false;
+    this.stateService.save(gamestate.getStateForSaveGame(gamestate));
     this.init()
     gamestate.getLastindex = lastIndex;
     gamestate.getLastcell = lastCell;
@@ -372,7 +389,9 @@ export default class GameController {
   }
 
   onSaveGameClick() {
+    gamestate.getGameStateTeam = team;
+    gamestate.getOnSave = true;
     this.stateService.save(gamestate.getStateForSaveGame(gamestate));
-    console.log(this.stateService.load())
+    // console.log(this.stateService.load())
   }
 }
