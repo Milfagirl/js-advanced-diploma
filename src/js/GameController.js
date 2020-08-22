@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable eol-last */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable semi */
@@ -71,14 +72,13 @@ export default class GameController {
                 if (item.character.team === 2) {
                   GamePlay.showError('Выбирайте персонажа из своей команды!');
                   return;
-                } else {
-                  this.gamePlay.selectCell(index); // выделение выбранного персонажа
-                  this.gamePlay.setCursor(cursors.pointer);
-                  gamestate.getLastindex = index; // номер ячейки выбранного персонажа
-                  gamestate.getState = true; // персонаж выбран
-                  gamestate.getCharacter = item;
-                  console.log(gamestate);
                 }
+                this.gamePlay.selectCell(index); // выделение выбранного персонажа
+                this.gamePlay.setCursor(cursors.pointer);
+                gamestate.getLastindex = index; // номер ячейки выбранного персонажа
+                gamestate.getState = true; // персонаж выбран
+                gamestate.getCharacter = item;
+                console.log(gamestate);
               }
             });
           } else { // если персонаж уже выбран

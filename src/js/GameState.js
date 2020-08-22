@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 // объект, который хранит текущее состояние игры (может сам себя воссоздавать из другого объекта)
 import Bowman from './childrens/Bowman.js';
 import Daemon from './childrens/Daemon.js';

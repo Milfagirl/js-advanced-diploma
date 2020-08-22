@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable max-len */
 // класс для команды (набор персонажей), представляющих компьютер и игрока
 // import Bowman from './childrens/Bowman.js';
@@ -9,9 +10,10 @@
 import generateTeam from './generators.js';
 import PositionedCharacter from './PositionedCharacter.js';
 import { gamestate } from './GameState.js';
-import gameCtrl from './app.js';
+// eslint-disable-next-line no-unused-vars
+import gameCtrl, { stateService } from './app.js';
+// eslint-disable-next-line no-unused-vars
 import GameStateService from './GameStateService.js';
-import {stateService} from './app.js'
 
 export class Team {
   constructor() {
