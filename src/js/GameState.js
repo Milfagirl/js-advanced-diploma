@@ -20,6 +20,8 @@ export default class GameState {
     this.types2 = [Daemon, Undead, Vampire];
     this.gamestateteam = [];
     this.onsave = false;
+    this.onload = false;
+    this.glasses = 0;
   }
 
   get getOnSave() {
@@ -28,6 +30,22 @@ export default class GameState {
 
   set getOnSave(value) {
     this.onsave = value;
+  }
+
+  get getGlasses() {
+    return this.glasses;
+  }
+
+  set getGlasses(value) {
+    this.glasses = value;
+  }
+
+  get getOnLoad() {
+    return this.onload;
+  }
+
+  set getOnLoad(value) {
+    this.onload = value;
   }
 
   get getGameStateTeam() {
@@ -109,6 +127,8 @@ export default class GameState {
     const team = state.getGameStateTeam;
     const onsave = state.getOnSave;
     const level = state.getLevel;
+    const onload = state.getOnLoad;
+    const glasses = state.getGlasses;
     const returnstate = {
       statelastindex: lastindex,
       statelastcell: lastcell,
@@ -116,6 +136,8 @@ export default class GameState {
       stateteam: team,
       stateonsave: onsave,
       statelevel: level,
+      stateonload: onload,
+      stateglasses: glasses,
     };
     console.log(returnstate);
     return returnstate;

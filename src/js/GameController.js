@@ -28,18 +28,34 @@ export default class GameController {
 
   init() {
     team = new Team();
+    gamestate.getLevel = 1;
+    gamestate.getGlasses = 0;
     const saved = this.stateService.load();
-    if (saved.stateonsave) {
+    // console.log('saved', saved, 'saved.stateonload', saved.stateonload)
+    if (saved && gamestate.getOnLoad) {
       gamestate.getLevel = saved.statelevel;
+      gamestate.getMove = saved.statemove
+      gamestate.getLastindex = saved.statelastindex;
+      gamestate.getLastCell = saved.statelastcell;
+      gamestate.getOnSave = false;
+      gamestate.getOnLoad = false;
+      gamestate.getGameStateTeam = saved.stateteam;
+      gamestate.getGlasses = saved.stateglasses;
+      team.getAllPositions = saved.stateteam;
+      // console.log('saved.stateteam', saved.stateteam)
+      // console.log('initteam1', gamestate.getGameStateTeam)
+    } else {
+      gamestate.getMove = 1;
+      gamestate.getGameStateTeam = team.getAllPositions;
+      // console.log('initteam2', gamestate.getGameStateTeam)
     }
-    gamestate.getMove = 1;
-    gamestate.getGameStateTeam = team.getAllPositions;
     this.gamePlay.drawUi(themes[gamestate.getLevel - 1]); // отрисовка поля
     this.gamePlay.redrawPositions(team.getAllPositions); // отрисовка персонажей на игровом поле
     this.gamePlay.addCellEnterListener(this.onCellEnter); // событие - наведение курсора мыши
     this.gamePlay.addCellClickListener(this.onCellClick); // событие - клик курсора мыши
     this.gamePlay.addNewGameListener(this.onNewGameClick);
     this.gamePlay.addSaveGameListener(this.onSaveGameClick);
+    this.gamePlay.addLoadGameListener(this.onLoadGameClick);
     gamestate.getState = false; // персонаж не выбран
     // gamestate.getMove = 1; // очередь команды 1
     // TODO: add event listeners to gamePlay events
@@ -71,7 +87,6 @@ export default class GameController {
               if (item.position === index) {
                 if (item.character.team === 2) {
                   GamePlay.showError('Выбирайте персонажа из своей команды!');
-                  return;
                 }
                 this.gamePlay.selectCell(index); // выделение выбранного персонажа
                 this.gamePlay.setCursor(cursors.pointer);
@@ -92,37 +107,39 @@ export default class GameController {
                 }
 
                 if (item.character.team === 2) {
+                  let purpose = 0
                   gamestate.getTarget = item;
                   const attack = gamestate.getCharacter.character.attack;
                   const defence = gamestate.getTarget.character.defence;
                   const damage = Math.max(attack - defence, attack * 0.1);
                   const showdamage = this.gamePlay.showDamage(index, damage);
-                  showdamage.then(() => {
-                    const promise = new Promise((resolve) => {
-                      gamestate.getTarget.character.health -= damage;
-                      if (gamestate.getTarget.character.health <= 0) {
-                        gamestate.getTarget.character.health = 0;
-                        console.log(team.getAllPositions);
-                        console.log(team.getAllPositions.indexOf(gamestate.getTarget));
-                        team.getAllPositions.splice(team.getAllPositions.indexOf(gamestate.getTarget), 1);
-                        this.gamePlay.redrawPositions(team.getAllPositions);
-                        gamestate.getGameStateTeam = team.getAllPositions;
-                      } else {
-                        this.gamePlay.redrawPositions(team.changeHealth(gamestate.getTarget.character.health, index));
-                        gamestate.getGameStateTeam = team.getAllPositions;
-                      }
-                      this.onCellEnter(index);
-                      gamestate.getLastcell = index;
-                      resolve();
-                      return promise;
-                    }).then(() => {
-                      this.gamePlay.deselectCell(gamestate.getLastcell);
-                      gamestate.getMove = 2;
-                      setTimeout(() => {
-                        this.onSecondTeam();
-                      }, 500);
+                  purpose++;
+                  if (purpose > 0) {
+                    showdamage.then(() => {
+                      const promise = new Promise((resolve) => {
+                        gamestate.getTarget.character.health -= damage;
+                        if (gamestate.getTarget.character.health <= 0) {
+                          gamestate.getTarget.character.health = 0;
+                          team.getAllPositions.splice(team.getAllPositions.indexOf(gamestate.getTarget), 1);
+                          this.gamePlay.redrawPositions(team.getAllPositions);
+                          gamestate.getGameStateTeam = team.getAllPositions;
+                        } else {
+                          this.gamePlay.redrawPositions(team.changeHealth(gamestate.getTarget.character.health, index));
+                          gamestate.getGameStateTeam = team.getAllPositions;
+                        }
+                        this.onCellEnter(index);
+                        gamestate.getLastcell = index;
+                        resolve();
+                        return promise;
+                      }).then(() => {
+                        this.gamePlay.deselectCell(gamestate.getLastcell);
+                        gamestate.getMove = 2;
+                        setTimeout(() => {
+                          this.onSecondTeam();
+                        }, 500);
+                      });
                     });
-                  });
+                  }
                 }
               }
             });
@@ -149,9 +166,14 @@ export default class GameController {
         }
       }
     } else if (team1 > 0 && team2 === 0) {
-      console.log('team', team1, team2);
+      // console.log('team', team1, team2);
       if (gamestate.getLevel <= 4) {
-        GamePlay.showMessage('Следующий уровень');
+        team.getAllPositions.forEach((item) => {
+          if (item.character.team === 1) {
+            gamestate.getGlasses += item.character.health
+          }
+        });
+        GamePlay.showMessage(`Переход на уровень ${gamestate.getLevel + 1}. Количество набранных очков ${gamestate.getGlasses}`);
         this.levelUp();
         this.gamePlay.redrawPositions(team.getAllPositions);
         gamestate.getGameStateTeam = team.getAllPositions;
@@ -163,12 +185,12 @@ export default class GameController {
         this.onCellEnter(index);
       } else {
         GamePlay.showMessage('Победа!');
-        return;
+        // return;
       }
     } else if (team1 === 0) {
       GamePlay.showMessage('Игра окончена!');
       // eslint-disable-next-line no-useless-return
-      return;
+      // return;
     }
   }
 
@@ -273,7 +295,7 @@ export default class GameController {
                     this.gamePlay.redrawPositions(team.getAllPositions);
                     gamestate.getGameStateTeam = team.getAllPositions;
                     this.gamePlay.deselectCell(gamestate.getTarget.position);
-                    console.log(team.getAllPositions);
+                    // console.log(team.getAllPositions);
                   } else {
                     team.getAllPositions = team.changeHealth(gamestate.getTarget.character.health, gamestate.getTarget.position);
                     gamestate.getGameStateTeam = team.getAllPositions;
@@ -314,8 +336,8 @@ export default class GameController {
   levelUp() {
     const lastlevel = gamestate.getLevel;
     gamestate.getLevel = lastlevel + 1;
-    console.log(gamestate.getLevel);
-    console.log(team.getAllPositions);
+    // console.log(gamestate.getLevel);
+    // console.log(team.getAllPositions);
     team.getAllPositions.forEach((item) => {
       const lasthealth = item.character.getHealth;
       item.character.getHealth = lasthealth + 20;
@@ -362,25 +384,35 @@ export default class GameController {
         gamestate.getGameStateTeam = team.getAllPositions;
         break;
     }
-    console.log(team.getAllPositions);
+    // console.log(team.getAllPositions);
   }
 
   onNewGameClick() {
     const lastIndex = gamestate.getLastindex;
     const lastCell = gamestate.getLastcell;
     gamestate.getOnSave = false;
+    gamestate.getOnLoad = false;
     gamestate.getLevel = 1;
     this.stateService.save(gamestate.getStateForSaveGame(gamestate));
     this.init()
     gamestate.getLastindex = lastIndex;
     gamestate.getLastcell = lastCell;
-    console.log(team);
   }
 
   onSaveGameClick() {
     gamestate.getGameStateTeam = team.getAllPositions;
     gamestate.getOnSave = true;
     this.stateService.save(gamestate.getStateForSaveGame(gamestate));
+    // console.log('saveteam', gamestate)
     // console.log(this.stateService.load())
+  }
+
+  onLoadGameClick() {
+    const saved = this.stateService.load();
+    if (saved && saved.stateonsave) {
+      gamestate.getOnLoad = true;
+    }
+    // console.log('loadteam', saved.stateteam, 'stateonload', saved.stateonload)
+    this.init()
   }
 }

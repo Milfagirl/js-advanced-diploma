@@ -44,7 +44,7 @@ export class Team {
 
   takeTeam(maxLevel1, maxLevel2, characterCount1, characterCount2) {
     const saved = stateService.load();
-    if (!saved.stateonsave) {
+    if (!saved || !saved.stateonload) {
       let random = 0;
       const arrayofrandom = [];
       const team1 = generateTeam(gamestate.getTypes1, maxLevel1, characterCount1, 1); // персонажи для команды 1 (allowedTypes, maxLevel, characterCount, team)

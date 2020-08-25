@@ -4,7 +4,7 @@ export default class Character {
     this.level = level;
     this.attack = 0;
     this.defence = 0;
-    this.health = 20;
+    this.health = 100;
     this.type = type;
     // TODO: throw error if user use "new Character()"
     if (!new.target) {
