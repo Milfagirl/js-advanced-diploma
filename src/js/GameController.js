@@ -240,6 +240,7 @@ export default class GameController {
           if (item.character.team === 1) {
             this.gamePlay.setCursor(cursors.pointer);
           }
+          console.log(this.gamePlay, index)
           this.gamePlay.showCellTooltip(`${String.fromCharCode(0xD83C, 0xDF96)}${item.character.level}${String.fromCharCode(0x2694)}${item.character.attack}${String.fromCharCode(0xD83D, 0xDEE1)}${item.character.defence}${String.fromCharCode(0x2764)}${item.character.health}`, index);
         }
       });

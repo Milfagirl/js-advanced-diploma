@@ -41,7 +41,6 @@ export function calcTileType(index, boardSize) {
       position = array[8];
     }
   }
-  console.log(position);
   return position;
 }
 

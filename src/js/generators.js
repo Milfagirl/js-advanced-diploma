@@ -8,7 +8,7 @@
 export function* characterGenerator(allowedTypes, maxLevel, team) {
   const rand = Math.floor(Math.random() * allowedTypes.length);
   const SomeCharacter = allowedTypes[rand];
-  const someCharacter = new SomeCharacter();
+  const someCharacter = new SomeCharacter(maxLevel);
   someCharacter.level = maxLevel;
   someCharacter.team = team;
   yield someCharacter;

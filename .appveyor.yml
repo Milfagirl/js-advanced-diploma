@@ -1,20 +1,21 @@
-image: Ubuntu1804  # образ для сборки
+# image: Ubuntu1804  # образ для сборки
 
-stack: node 12  # окружение
+# stack: node 12  # окружение
 
-branches:
-  only:
-    - master  # ветка git
+# branches:
+#   only:
+#     - master  # ветка git
 
-cache: node_modules  # кеширование
+# cache: node_modules  # кеширование
 
-install:
-  - npm install  # команда установки зависимостей
+# install:
+#   - npm install  # команда установки зависимостей
 
-build: off  # отключаем встроенную в appveyor систему сборки
+# build: off  # отключаем встроенную в appveyor систему сборки
 
-build_script:
-  - npm run build   # команда сборки
+# build_script:
+#   - npm run build   # команда сборки
 
-test_script:
-  - npm run lint && npm test  # скрипт тестирования
+# test_script:
+#   - npm run lint && npm test  # скрипт тестирования
+  ! [Статус сборки] (https://ci.appveyor.com/api/projects/status/f31fdsjvis52amka?svg=true)] (https://ci.appveyor.com/project/Milfagirl/js-advanced-diploma )

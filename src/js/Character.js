@@ -7,8 +7,8 @@ export default class Character {
     this.health = 100;
     this.type = type;
     // TODO: throw error if user use "new Character()"
-    if (!new.target) {
-      return new Error('Character should not called with new');
+    if (new.target.name === 'Character') {
+      throw new Error('error new Character');
     }
   }
 
