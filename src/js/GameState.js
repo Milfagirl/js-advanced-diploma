@@ -139,7 +139,6 @@ export default class GameState {
       stateonload: onload,
       stateglasses: glasses,
     };
-    console.log(returnstate);
     return returnstate;
   }
 }

@@ -77,7 +77,6 @@ export class Team {
       });
       this.getAllPositions = positions1.concat(positions2, this.getAllPositions);
     } else this.getAllPositions = saved.stateteam;
-    console.log(this.getAllPositions);
   }
 
   changePositions(lastValue, newValue) {

@@ -31,7 +31,6 @@ export default class GameController {
     gamestate.getLevel = 1;
     gamestate.getGlasses = 0;
     const saved = this.stateService.load();
-    // console.log('saved', saved, 'saved.stateonload', saved.stateonload)
     if (saved && gamestate.getOnLoad) {
       gamestate.getLevel = saved.statelevel;
       gamestate.getMove = saved.statemove
@@ -42,12 +41,9 @@ export default class GameController {
       gamestate.getGameStateTeam = saved.stateteam;
       gamestate.getGlasses = saved.stateglasses;
       team.getAllPositions = saved.stateteam;
-      // console.log('saved.stateteam', saved.stateteam)
-      // console.log('initteam1', gamestate.getGameStateTeam)
     } else {
       gamestate.getMove = 1;
       gamestate.getGameStateTeam = team.getAllPositions;
-      // console.log('initteam2', gamestate.getGameStateTeam)
     }
     this.gamePlay.drawUi(themes[gamestate.getLevel - 1]); // отрисовка поля
     this.gamePlay.redrawPositions(team.getAllPositions); // отрисовка персонажей на игровом поле
@@ -93,7 +89,6 @@ export default class GameController {
                 gamestate.getLastindex = index; // номер ячейки выбранного персонажа
                 gamestate.getState = true; // персонаж выбран
                 gamestate.getCharacter = item;
-                console.log(gamestate);
               }
             });
           } else { // если персонаж уже выбран
@@ -166,7 +161,6 @@ export default class GameController {
         }
       }
     } else if (team1 > 0 && team2 === 0) {
-      // console.log('team', team1, team2);
       if (gamestate.getLevel <= 4) {
         team.getAllPositions.forEach((item) => {
           if (item.character.team === 1) {
@@ -240,7 +234,6 @@ export default class GameController {
           if (item.character.team === 1) {
             this.gamePlay.setCursor(cursors.pointer);
           }
-          console.log(this.gamePlay, index)
           this.gamePlay.showCellTooltip(`${String.fromCharCode(0xD83C, 0xDF96)}${item.character.level}${String.fromCharCode(0x2694)}${item.character.attack}${String.fromCharCode(0xD83D, 0xDEE1)}${item.character.defence}${String.fromCharCode(0x2764)}${item.character.health}`, index);
         }
       });
@@ -296,7 +289,6 @@ export default class GameController {
                     this.gamePlay.redrawPositions(team.getAllPositions);
                     gamestate.getGameStateTeam = team.getAllPositions;
                     this.gamePlay.deselectCell(gamestate.getTarget.position);
-                    // console.log(team.getAllPositions);
                   } else {
                     team.getAllPositions = team.changeHealth(gamestate.getTarget.character.health, gamestate.getTarget.position);
                     gamestate.getGameStateTeam = team.getAllPositions;
@@ -337,8 +329,6 @@ export default class GameController {
   levelUp() {
     const lastlevel = gamestate.getLevel;
     gamestate.getLevel = lastlevel + 1;
-    // console.log(gamestate.getLevel);
-    // console.log(team.getAllPositions);
     team.getAllPositions.forEach((item) => {
       const lasthealth = item.character.getHealth;
       item.character.getHealth = lasthealth + 20;
@@ -385,7 +375,6 @@ export default class GameController {
         gamestate.getGameStateTeam = team.getAllPositions;
         break;
     }
-    // console.log(team.getAllPositions);
   }
 
   onNewGameClick() {
@@ -404,8 +393,6 @@ export default class GameController {
     gamestate.getGameStateTeam = team.getAllPositions;
     gamestate.getOnSave = true;
     this.stateService.save(gamestate.getStateForSaveGame(gamestate));
-    // console.log('saveteam', gamestate)
-    // console.log(this.stateService.load())
   }
 
   onLoadGameClick() {
@@ -413,7 +400,6 @@ export default class GameController {
     if (saved && saved.stateonsave) {
       gamestate.getOnLoad = true;
     }
-    // console.log('loadteam', saved.stateteam, 'stateonload', saved.stateonload)
     this.init()
   }
 }
