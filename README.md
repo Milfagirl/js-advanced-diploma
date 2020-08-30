@@ -1,3 +1,4 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/f31fdsjvis52amka?svg=true)](https://ci.appveyor.com/project/Milfagirl/js-advanced-diploma)
 # AJS. Retro Game
 
 ###### tags: `netology` `advanced js`
