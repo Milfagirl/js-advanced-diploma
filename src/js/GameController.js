@@ -117,8 +117,6 @@ export default class GameController {
                     }
                   })
 
-
-
                   // gamestate.getTarget = item;
                   // const attack = gamestate.getCharacter.character.attack;
                   // const defence = gamestate.getTarget.character.defence;
