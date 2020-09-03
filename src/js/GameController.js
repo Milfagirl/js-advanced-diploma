@@ -102,13 +102,29 @@ export default class GameController {
                 }
 
                 if (item.character.team === 2) {
-                  let purpose = 0
-                  gamestate.getTarget = item;
-                  const attack = gamestate.getCharacter.character.attack;
-                  const defence = gamestate.getTarget.character.defence;
-                  const damage = Math.max(attack - defence, attack * 0.1);
-                  const showdamage = this.gamePlay.showDamage(index, damage);
-                  purpose++;
+                  let purpose = 0;
+                  let showdamage = '';
+                  let damage = 0;
+                  const aroundattack = field.radius('attack', gamestate.getCharacter);
+                  aroundattack.forEach((element) => {
+                    if (element === index) {
+                      gamestate.getTarget = item;
+                      const attack = gamestate.getCharacter.character.attack;
+                      const defence = gamestate.getTarget.character.defence;
+                      damage = Math.max(attack - defence, attack * 0.1);
+                      showdamage = this.gamePlay.showDamage(index, damage);
+                      purpose++;
+                    }
+                  })
+
+
+
+                  // gamestate.getTarget = item;
+                  // const attack = gamestate.getCharacter.character.attack;
+                  // const defence = gamestate.getTarget.character.defence;
+                  // const damage = Math.max(attack - defence, attack * 0.1);
+                  // const showdamage = this.gamePlay.showDamage(index, damage);
+                  // purpose++;
                   if (purpose > 0) {
                     showdamage.then(() => {
                       const promise = new Promise((resolve) => {
@@ -168,9 +184,10 @@ export default class GameController {
           }
         });
         GamePlay.showMessage(`Переход на уровень ${gamestate.getLevel + 1}. Количество набранных очков ${gamestate.getGlasses}`);
+        gamestate.getGameStateTeam = team.getAllPositions;
         this.levelUp();
         this.gamePlay.redrawPositions(team.getAllPositions);
-        gamestate.getGameStateTeam = team.getAllPositions;
+        // gamestate.getGameStateTeam = team.getAllPositions;
         this.gamePlay.addCellEnterListener(this.onCellEnter); // событие - наведение курсора мыши
         this.gamePlay.addCellClickListener(this.onCellClick); // событие - клик курсора мыши
         gamestate.getState = false; // персонаж не выбран
@@ -331,9 +348,10 @@ export default class GameController {
     gamestate.getLevel = lastlevel + 1;
     team.getAllPositions.forEach((item) => {
       const lasthealth = item.character.getHealth;
-      item.character.getHealth = lasthealth + 20;
-      if (item.character.getHealth >= 20) {
-        item.character.getHealth = 20;
+      // console.log(lasthealth);
+      item.character.getHealth = lasthealth + 80;
+      if (item.character.getHealth >= 100) {
+        item.character.getHealth = 100;
       }
       const attackAfter = Math.max(item.character.getAttack, item.character.getAttack * ((180 - item.character.getHealth) / 100));
       item.character.getAttack = attackAfter;
