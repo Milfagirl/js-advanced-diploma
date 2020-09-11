@@ -7,7 +7,7 @@ import GamePlay from './GamePlay.js';
 import GameController from './GameController.js';
 import GameStateService from './GameStateService.js';
 
-const gamePlay = new GamePlay();
+export const gamePlay = new GamePlay();
 gamePlay.bindToDOM(document.querySelector('#game-container'));
 
 export const stateService = new GameStateService(localStorage);
